@@ -25,8 +25,7 @@ public enum ExceptionMsg {
     public String getMsg() {
         return msg;
     }
-
-    private ExceptionMsg(String code, String msg) {
+    ExceptionMsg(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }

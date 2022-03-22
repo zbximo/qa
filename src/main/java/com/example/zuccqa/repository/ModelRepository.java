@@ -1,13 +1,22 @@
 package com.example.zuccqa.repository;
 
 import com.example.zuccqa.entity.Model;
+import com.example.zuccqa.entity.Question;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author: ximo
  * @date: 2022/3/20 20:07
  * @description:
  */
-public interface ModelRepository extends MongoRepository<Model,Integer> {
-    Model findByModelName(String name);
+@Repository
+public interface ModelRepository extends MongoRepository<Model, Integer> {
+    Model findByModelID(String modelId);
+    Model findByModelName(String modelName);
+    Model findByModelNameAndQuestionList(String modelName, List<Question> list);
+    void deleteByModelID(String modelId);
 }

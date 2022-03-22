@@ -1,7 +1,6 @@
 package com.example.zuccqa.entity;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -21,7 +20,7 @@ public class Answer {
     @Id
     private String answerId;
     @Field("student")
-    private Student student;
+    private User user;
     @Field("feedback")
     private Feedback feedback;
     @Field("answers")

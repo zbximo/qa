@@ -1,7 +1,6 @@
 package com.example.zuccqa.entity;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -21,9 +20,9 @@ public class Course {
     @Field("className")
     private String courseName;
     @Field("stuList")
-    private List<Student> stuList;
+    private List<User> stuList;
     @Field("teacher")
-    private Teacher teacher;
+    private User teacher;
     @Field("courseData")
     private List<java.util.Date> courseData;
 }
