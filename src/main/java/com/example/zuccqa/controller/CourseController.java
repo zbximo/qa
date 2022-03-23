@@ -6,10 +6,12 @@ import com.example.zuccqa.repository.CourseRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
+import org.springframework.beans.BeanUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,32 +26,28 @@ public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Course addCourse(@RequestBody Map<String, String> queryExample) {
-
+    public ResponseData addCourse(@RequestBody Course courseMap) throws Exception {
+        if (courseMap == null){
+            return new ResponseData(ExceptionMsg.FAILED, "");
+        }
         ObjectId id = new ObjectId();
-        Course course = new Course();
-        course.setCourseName("course"+id.toString());
-        course.setCourseId(id.toString());
-        courseRepository.save(course);
-        return course;
+        courseMap.setCourseId(id.toString());
+        Course c = new Course();
+        BeanUtils.copyProperties(courseMap,c);
+        courseRepository.save(c);
+        return new ResponseData(ExceptionMsg.SUCCESS, c);
     }
-    @RequestMapping(value = "/delete{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public Response deleteModel(@PathVariable("id") String id) {
         courseRepository.deleteByCourseId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Course updateCourse(@RequestBody Map<String, String> queryExample) {
-        String name = queryExample.get("name");
-        String age = queryExample.get("age");
-        Course course = courseRepository.findByCourseName("course1");
-        User teacher = new User();
-        teacher.setAge(300);
-        course.setTeacher(teacher);
-        courseRepository.save(course);
-        return course;
+    public ResponseData updateCourse(@RequestBody Course courseMap) {
+        courseRepository.save(courseMap);
+        return new ResponseData(ExceptionMsg.SUCCESS, courseMap);
     }
-    @RequestMapping(value = "/find{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseData findById(@PathVariable("id") String id) {
         Course course = courseRepository.findByCourseId(id);
         if (course != null) {

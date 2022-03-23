@@ -7,12 +7,14 @@ package com.example.zuccqa.controller;
  * @description:
  */
 
+import com.example.zuccqa.entity.Model;
 import com.example.zuccqa.entity.User;
 import com.example.zuccqa.repository.UserRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
 import org.bson.types.ObjectId;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,18 +38,18 @@ class UserController {
     private UserRepository UserRepository;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addUser(@RequestBody Map<String, String> queryExample) {
-        List<User> list = new LinkedList<>();
-
-        for (Integer count = 0; count < 3; count++) {
-            ObjectId id = new ObjectId();
-            User user = new User();
-            user.setName("count" + count);
-            user.setId(id.toString());
-            UserRepository.save(user);
-            list.add(user);
+    public ResponseData addUser(@RequestBody User userMap) {
+        if (userMap == null) {
+            return new ResponseData(ExceptionMsg.FAILED, "");
+        } else if (userMap.getId().equals("") || userMap.getId() == null) {
+            return new ResponseData(ExceptionMsg.FAILED, "用户账号为空");
+        } else if (userMap.getPassword().equals("") || userMap.getPassword() == null) {
+            return new ResponseData(ExceptionMsg.FAILED, "密码为空");
         }
-        return new ResponseData(ExceptionMsg.SUCCESS, list);
+        User user = new User();
+        BeanUtils.copyProperties(userMap, user);
+        UserRepository.save(userMap);
+        return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
@@ -58,13 +60,13 @@ class UserController {
         return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
-    @RequestMapping(value = "/delete{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public Response deleteStudent(@PathVariable("id") String id) {
         UserRepository.deleteById(id);
         return result(ExceptionMsg.SUCCESS);
     }
 
-    @RequestMapping(value = "/find{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseData getById(@PathVariable("id") String id) {
         User user = UserRepository.findById(id);
 
@@ -76,22 +78,21 @@ class UserController {
         List<User> list = UserRepository.findAll();
         return new ResponseData(ExceptionMsg.SUCCESS, list);
     }
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public Response login(@RequestBody Map<String, String> queryExample){
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Response login(@RequestBody Map<String, String> queryExample) {
         String id = queryExample.get("id");
         String passwd = queryExample.get("password");
-        if (id.equals("") || passwd.equals("")){
-            return new ResponseData(ExceptionMsg.FAILED,"用户名密码不能为空");
+        if (id.equals("") || passwd.equals("")) {
+            return new ResponseData(ExceptionMsg.FAILED, "用户名密码不能为空");
         }
         User s = UserRepository.findById(id);
-        if (!s.getId().equals(id)){
-            return new ResponseData(ExceptionMsg.FAILED,"用户不存在");
-        }
-        else if (!s.getPassword().equals(passwd)){
-            return new ResponseData(ExceptionMsg.SUCCESS,"密码错误");
-        }
-        else{
-            return new ResponseData(ExceptionMsg.SUCCESS,"登陆成功");
+        if (!s.getId().equals(id)) {
+            return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
+        } else if (!s.getPassword().equals(passwd)) {
+            return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
+        } else {
+            return new ResponseData(ExceptionMsg.SUCCESS, "登陆成功");
         }
 
     }
