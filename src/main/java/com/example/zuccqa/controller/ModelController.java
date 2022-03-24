@@ -30,15 +30,15 @@ public class ModelController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addModel(@RequestBody Model modelMap) throws Exception {
-        if (modelMap == null){
-            return new ResponseData(ExceptionMsg.FAILED,"");
+        if (modelMap == null) {
+            return new ResponseData(ExceptionMsg.FAILED, "");
         }
         ObjectId id = new ObjectId();
         modelMap.setModelID(id.toString());
         Model model = new Model();
-        BeanUtils.copyProperties(modelMap,model);
+        BeanUtils.copyProperties(modelMap, model);
         modelRepository.save(model);
-        return new ResponseData(ExceptionMsg.SUCCESS,model);
+        return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
@@ -49,9 +49,9 @@ public class ModelController {
 
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public String updateModel(@RequestBody Model modelMap) throws Exception {
+    public ResponseData updateModel(@RequestBody Model modelMap) throws Exception {
         modelRepository.save(modelMap);
-        return "修改成功";
+        return new ResponseData(ExceptionMsg.SUCCESS, modelMap);
     }
 
     @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)

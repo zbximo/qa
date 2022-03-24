@@ -26,13 +26,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 class UserController {
-    protected Response result(ExceptionMsg msg) {
-        return new Response(msg);
-    }
-
-    protected Response result() {
-        return new Response();
-    }
 
     @Autowired
     private UserRepository UserRepository;
@@ -53,17 +46,15 @@ class UserController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseData updateUser(@RequestBody Map<String, String> queryExample) {
-        User user = UserRepository.findById(String.valueOf(31901028));
-        user.setAge(200);
-        UserRepository.save(user);
-        return new ResponseData(ExceptionMsg.SUCCESS, user);
+    public ResponseData updateUser(@RequestBody User userMap) {
+        UserRepository.save(userMap);
+        return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public Response deleteStudent(@PathVariable("id") String id) {
         UserRepository.deleteById(id);
-        return result(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.SUCCESS);
     }
 
     @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
@@ -92,7 +83,7 @@ class UserController {
         } else if (!s.getPassword().equals(passwd)) {
             return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
         } else {
-            return new ResponseData(ExceptionMsg.SUCCESS, "登陆成功");
+            return new ResponseData(ExceptionMsg.SUCCESS, s);
         }
 
     }

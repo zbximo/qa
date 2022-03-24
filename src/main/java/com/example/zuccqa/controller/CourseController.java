@@ -25,28 +25,32 @@ import java.util.Map;
 public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addCourse(@RequestBody Course courseMap) throws Exception {
-        if (courseMap == null){
+        if (courseMap == null) {
             return new ResponseData(ExceptionMsg.FAILED, "");
         }
         ObjectId id = new ObjectId();
         courseMap.setCourseId(id.toString());
         Course c = new Course();
-        BeanUtils.copyProperties(courseMap,c);
+        BeanUtils.copyProperties(courseMap, c);
         courseRepository.save(c);
         return new ResponseData(ExceptionMsg.SUCCESS, c);
     }
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteModel(@PathVariable("id") String id) {
+    public Response deleteCourse(@PathVariable("id") String id) {
         courseRepository.deleteByCourseId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateCourse(@RequestBody Course courseMap) {
         courseRepository.save(courseMap);
         return new ResponseData(ExceptionMsg.SUCCESS, courseMap);
     }
+
     @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseData findById(@PathVariable("id") String id) {
         Course course = courseRepository.findByCourseId(id);
