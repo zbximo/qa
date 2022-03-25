@@ -16,7 +16,6 @@ import java.util.List;
 @Repository
 public interface ModelRepository extends MongoRepository<Model, Integer> {
     Model findByModelID(String modelId);
-    Model findByModelName(String modelName);
-    Model findByModelNameAndQuestionList(String modelName, List<Question> list);
+    List<Model> findByModelName(String modelName);
     void deleteByModelID(String modelId);
 }

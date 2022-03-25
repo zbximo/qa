@@ -1,7 +1,6 @@
 package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.Course;
-import com.example.zuccqa.entity.User;
 import com.example.zuccqa.repository.CourseRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
@@ -11,9 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: ximo
@@ -51,7 +48,7 @@ public class CourseController {
         return new ResponseData(ExceptionMsg.SUCCESS, courseMap);
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET)
     public ResponseData findById(@PathVariable("id") String id) {
         Course course = courseRepository.findByCourseId(id);
         if (course != null) {
@@ -60,9 +57,20 @@ public class CourseController {
         return new ResponseData(ExceptionMsg.FAILED, course);
     }
 
+    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
+    public ResponseData findByName(@PathVariable("name") String name) {
+        List<Course> courseList = courseRepository.findByCourseName(name);
+        if (courseList.size() > 0) {
+            return new ResponseData(ExceptionMsg.SUCCESS, courseList);
+        }
+        return new ResponseData(ExceptionMsg.FAILED, courseList);
+    }
+
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<Course> courseList = courseRepository.findAll();
         return new ResponseData(ExceptionMsg.SUCCESS, courseList);
     }
+
+
 }

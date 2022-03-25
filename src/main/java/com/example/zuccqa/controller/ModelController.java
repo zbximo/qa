@@ -2,7 +2,6 @@ package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.Model;
-import com.example.zuccqa.entity.Question;
 import com.example.zuccqa.repository.ModelRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
@@ -12,10 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: ximo
@@ -61,6 +58,15 @@ public class ModelController {
             return new ResponseData(ExceptionMsg.SUCCESS, model);
         }
         return new ResponseData(ExceptionMsg.FAILED, model);
+    }
+
+    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
+    public ResponseData findByName(@PathVariable("name") String name) {
+        List<Model> modelList = modelRepository.findByModelName(name);
+        if (modelList.size() > 0) {
+            return new ResponseData(ExceptionMsg.SUCCESS, modelList);
+        }
+        return new ResponseData(ExceptionMsg.FAILED, modelList);
     }
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)

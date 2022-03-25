@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +63,15 @@ class UserController {
         return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
+    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
+    public ResponseData findByName(@PathVariable("name") String name) {
+        List<User> userList = UserRepository.findByName(name);
+        if (userList.size() > 0) {
+            return new ResponseData(ExceptionMsg.SUCCESS, userList);
+        }
+        return new ResponseData(ExceptionMsg.FAILED, userList);
+    }
+
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<User> list = UserRepository.findAll();
@@ -77,15 +85,32 @@ class UserController {
         if (id.equals("") || passwd.equals("")) {
             return new ResponseData(ExceptionMsg.FAILED, "用户名密码不能为空");
         }
-        User s = UserRepository.findById(id);
-        if (!s.getId().equals(id)) {
+        User user = UserRepository.findById(id);
+        if (user.getId() == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
-        } else if (!s.getPassword().equals(passwd)) {
+        } else if (!user.getPassword().equals(passwd)) {
             return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
         } else {
-            return new ResponseData(ExceptionMsg.SUCCESS, s);
+            return new ResponseData(ExceptionMsg.SUCCESS, user);
         }
+    }
 
+    @RequestMapping(value = "/modifyPwd", method = RequestMethod.POST)
+    public Response modifyPwd(@RequestBody Map<String, String> queryExample) {
+        String id = queryExample.get("id");
+        String oldPwd = queryExample.get("oldPwd");
+        String newPwd = queryExample.get("newPwd");
+        User user = UserRepository.findById(id);
+
+        if (user.getId()==null) {
+            return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
+        } else if (oldPwd.equals(user.getPassword())) {
+            return new ResponseData(ExceptionMsg.FAILED, "旧密码错误");
+        } else {
+            user.setPassword(newPwd);
+            UserRepository.save(user);
+            return new ResponseData(ExceptionMsg.SUCCESS, user);
+        }
     }
 }
 

@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Date;
+import java.util.Map;
+
 /**
  * @author: ximo
  * @date: 2022/3/20 16:31
@@ -29,5 +31,5 @@ public class Course {
     private User teacher;
 
     @Field("courseData")
-    private Date courseData;
+    private Map<Integer,List<Integer>> courseData;
 }
