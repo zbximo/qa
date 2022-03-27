@@ -63,7 +63,7 @@ class UserController {
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Response deleteStudent(@RequestParam("id") String id) {
+    public Response deleteUser(@RequestParam("id") String id) {
         UserRepository.deleteById(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
@@ -137,7 +137,7 @@ class UserController {
 
         if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
-        } else if (oldPwd.equals(user.getPassword())) {
+        } else if (!oldPwd.equals(user.getPassword())) {
             return new ResponseData(ExceptionMsg.FAILED, "旧密码错误");
         } else {
             user.setPassword(newPwd);
