@@ -23,8 +23,12 @@ public class FeedbackController {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
+    /**
+     * @param feedbackMap 问卷信息
+     * @return
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addFeedback(@RequestBody Feedback feedbackMap) throws Exception {
+    public ResponseData addFeedback(@RequestBody Feedback feedbackMap) {
         if (feedbackMap == null) {
             return new ResponseData(ExceptionMsg.FAILED, "");
         }
@@ -36,21 +40,33 @@ public class FeedbackController {
         return new ResponseData(ExceptionMsg.SUCCESS, feedback);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteFeedback(@PathVariable("id") String id) {
+    /**
+     * @param id 问卷ID
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Response deleteFeedback(@RequestParam("id") String id) {
         feedbackRepository.deleteByFeedbackId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
 
+    /**
+     * @param feedbackMap 问卷信息
+     * @return
+     */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseData updateFeedback(@RequestBody Feedback feedbackMap) throws Exception {
+    public ResponseData updateFeedback(@RequestBody Feedback feedbackMap) {
         feedbackRepository.save(feedbackMap);
         return new ResponseData(ExceptionMsg.SUCCESS, feedbackMap);
     }
 
-    @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET)
-    public ResponseData findById(@PathVariable("id") String id) {
+    /**
+     * @param id 问卷ID
+     * @return
+     */
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public ResponseData findById(@RequestParam("id") String id) {
         Feedback feedback = feedbackRepository.findByFeedbackId(id);
         if (feedback != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, feedback);
@@ -58,16 +74,23 @@ public class FeedbackController {
         return new ResponseData(ExceptionMsg.FAILED, feedback);
     }
 
-    @RequestMapping(value = "/findByCourseId/{courseid}", method = RequestMethod.GET)
-    public ResponseData findByCourseId(@PathVariable("courseid") String courseid) {
-        System.out.println(courseid);
-        List<Feedback> feedback = feedbackRepository.find(courseid);
+    /**
+     * @param courseId 课程ID
+     * @return
+     */
+    @RequestMapping(value = "/findByCourseId", method = RequestMethod.GET)
+    public ResponseData findByCourseId(@RequestParam("courseId") String courseId) {
+        System.out.println(courseId);
+        List<Feedback> feedback = feedbackRepository.find(courseId);
         if (feedback != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, feedback);
         }
         return new ResponseData(ExceptionMsg.FAILED, feedback);
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<Feedback> feedbackList = feedbackRepository.findAll();

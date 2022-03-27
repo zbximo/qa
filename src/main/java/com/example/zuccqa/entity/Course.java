@@ -46,5 +46,5 @@ public class Course {
      * 课程时间
      */
     @Field("courseDate")
-    private Map<Integer,List<Integer>> courseDate;
+    private Map<Integer, List<Integer>> courseDate;
 }

@@ -25,8 +25,12 @@ public class ModelController {
     @Autowired
     private ModelRepository modelRepository;
 
+    /**
+     * @param modelMap 模板信息
+     * @return
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addModel(@RequestBody Model modelMap) throws Exception {
+    public ResponseData addModel(@RequestBody Model modelMap) {
         if (modelMap == null) {
             return new ResponseData(ExceptionMsg.FAILED, "");
         }
@@ -38,21 +42,33 @@ public class ModelController {
         return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteModel(@PathVariable("id") String id) {
+    /**
+     * @param id 模板ID
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Response deleteModel(@RequestParam("id") String id) {
         modelRepository.deleteByModelID(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
 
+    /**
+     * @param modelMap 模板信息
+     * @return
+     */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseData updateModel(@RequestBody Model modelMap) throws Exception {
+    public ResponseData updateModel(@RequestBody Model modelMap) {
         modelRepository.save(modelMap);
         return new ResponseData(ExceptionMsg.SUCCESS, modelMap);
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
-    public ResponseData findById(@PathVariable("id") String id) {
+    /**
+     * @param id 模板ID
+     * @return
+     */
+    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    public ResponseData findById(@RequestParam("id") String id) {
         Model model = modelRepository.findByModelID(id);
         if (model != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, model);
@@ -60,8 +76,12 @@ public class ModelController {
         return new ResponseData(ExceptionMsg.FAILED, model);
     }
 
-    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
-    public ResponseData findByName(@PathVariable("name") String name) {
+    /**
+     * @param name 模板名称
+     * @return
+     */
+    @RequestMapping(value = "/findByName", method = RequestMethod.GET)
+    public ResponseData findByName(@RequestParam("name") String name) {
         List<Model> modelList = modelRepository.findByModelName(name);
         if (modelList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, modelList);
@@ -69,6 +89,9 @@ public class ModelController {
         return new ResponseData(ExceptionMsg.FAILED, modelList);
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<Model> modelList = modelRepository.findAll();

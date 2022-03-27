@@ -23,8 +23,14 @@ public class AnswerController {
     @Autowired
     private AnswerRepository answerRepository;
 
+    /**
+     * @desc 添加一个问卷填写表
+     *
+     * @param answerMap 问卷填写表
+     * @return
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addAnswer(@RequestBody Answer answerMap) throws Exception {
+    public ResponseData addAnswer(@RequestBody Answer answerMap) {
         ObjectId id = new ObjectId();
         answerMap.setAnswerId(id.toString());
         Answer answer = new Answer();
@@ -33,20 +39,32 @@ public class AnswerController {
         return new ResponseData(ExceptionMsg.SUCCESS, answer);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteAnswer(@PathVariable("id") String id) {
+    /**
+     * @param id 问卷填写表ID
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Response deleteAnswer(@RequestParam("id") String id) {
         answerRepository.deleteByAnswerId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
+    /**
+     * @param answerMap 问卷填写表信息
+     * @return
+     */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateAnswer(@RequestBody Answer answerMap) {
         answerRepository.save(answerMap);
         return new ResponseData(ExceptionMsg.SUCCESS, answerMap);
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
-    public ResponseData findById(@PathVariable("id") String id) {
+    /**
+     * @param id 问卷填写表ID
+     * @return
+     */
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public ResponseData findById(@RequestParam("id") String id) {
         Answer answer = answerRepository.findByAnswerId(id);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);
@@ -54,8 +72,12 @@ public class AnswerController {
         return new ResponseData(ExceptionMsg.FAILED, answer);
     }
 
-    @RequestMapping(value = "/find/{userId}", method = RequestMethod.GET)
-    public ResponseData findByUserAndFeedback(@PathVariable("userId") String userId) {
+    /**
+     * @param userId 用户ID
+     * @return
+     */
+    @RequestMapping(value = "/findByUserId", method = RequestMethod.GET)
+    public ResponseData findByUserId(@RequestParam("userId") String userId) {
         Answer answer = answerRepository.UserId(userId);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);
@@ -63,8 +85,12 @@ public class AnswerController {
         return new ResponseData(ExceptionMsg.FAILED, answer);
     }
 
-    @RequestMapping(value = "/find/{feedbackId}", method = RequestMethod.GET)
-    public ResponseData findByFeedback(@PathVariable("feedbackId") String feedbackId) {
+    /**
+     * @param feedbackId 问卷ID
+     * @return
+     */
+    @RequestMapping(value = "/findByFeedbackId", method = RequestMethod.GET)
+    public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
         Answer answer = answerRepository.UserId(feedbackId);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);
@@ -72,9 +98,14 @@ public class AnswerController {
         return new ResponseData(ExceptionMsg.FAILED, answer);
     }
 
-    @RequestMapping(value = "/find/{userId}/{feedbackId}", method = RequestMethod.GET)
-    public ResponseData findByUserAndFeedback(@PathVariable("userId") String userId,
-                                              @PathVariable("feedbackId") String feedbackId) {
+    /**
+     * @param userId     用户ID
+     * @param feedbackId 问卷ID
+     * @return
+     */
+    @RequestMapping(value = "/findByUserAndFeedback", method = RequestMethod.GET)
+    public ResponseData findByUserIdAndFeedbackId(@RequestParam("userId") String userId,
+                                              @RequestParam("feedbackId") String feedbackId) {
         Answer answer = answerRepository.UserIdAndFeedbackId(userId, feedbackId);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);
@@ -82,6 +113,9 @@ public class AnswerController {
         return new ResponseData(ExceptionMsg.FAILED, answer);
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<Answer> answerList = answerRepository.findAll();

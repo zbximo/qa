@@ -36,7 +36,7 @@ public class User {
     @Field("password")
     private String password;
     /**
-     * 用户身份
+     * 用户身份(0:学生,1:教师,2:管理员)
      */
     @Field("position")
     private Integer position;

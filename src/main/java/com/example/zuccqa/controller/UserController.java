@@ -30,7 +30,7 @@ class UserController {
     private UserRepository UserRepository;
 
     /**
-     * @param userMap
+     * @param userMap 用户信息
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -48,27 +48,45 @@ class UserController {
         return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
+    /**
+     * @param userMap 用户信息
+     * @return
+     */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateUser(@RequestBody User userMap) {
         UserRepository.save(userMap);
         return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteStudent(@PathVariable("id") String id) {
+    /**
+     * @param id 用户ID
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Response deleteStudent(@RequestParam("id") String id) {
         UserRepository.deleteById(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
-    public ResponseData getById(@PathVariable("id") String id) {
+    /**
+     * @param id 用户ID
+     * @return
+     */
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public ResponseData findById(@RequestParam("id") String id) {
         User user = UserRepository.findById(id);
-
+        if (user==null){
+            return new ResponseData(ExceptionMsg.FAILED, user);
+        }
         return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
-    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
-    public ResponseData findByName(@PathVariable("name") String name) {
+    /**
+     * @param name 用户姓名
+     * @return
+     */
+    @RequestMapping(value = "/findByName", method = RequestMethod.GET)
+    public ResponseData findByName(@RequestParam("name") String name) {
         List<User> userList = UserRepository.findByName(name);
         if (userList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, userList);
@@ -76,37 +94,48 @@ class UserController {
         return new ResponseData(ExceptionMsg.FAILED, userList);
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<User> list = UserRepository.findAll();
         return new ResponseData(ExceptionMsg.SUCCESS, list);
     }
 
+
+    /**
+     * @param id       用户ID
+     * @param password 用户密码
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Response login(@RequestBody Map<String, String> queryExample) {
-        String id = queryExample.get("id");
-        String passwd = queryExample.get("password");
-        if (id.equals("") || passwd.equals("")) {
+    public Response login(@RequestParam("id") String id, @RequestParam("password") String password) {
+        if (id.equals("") || password.equals("")) {
             return new ResponseData(ExceptionMsg.FAILED, "用户名密码不能为空");
         }
         User user = UserRepository.findById(id);
         if (user.getId() == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
-        } else if (!user.getPassword().equals(passwd)) {
+        } else if (!user.getPassword().equals(password)) {
             return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
         } else {
             return new ResponseData(ExceptionMsg.SUCCESS, user);
         }
     }
 
+    /**
+     * @param id     用户ID
+     * @param oldPwd 用户原密码
+     * @param newPwd 用户新密码
+     * @return
+     */
     @RequestMapping(value = "/modifyPwd", method = RequestMethod.POST)
-    public Response modifyPwd(@RequestBody Map<String, String> queryExample) {
-        String id = queryExample.get("id");
-        String oldPwd = queryExample.get("oldPwd");
-        String newPwd = queryExample.get("newPwd");
+    public Response modifyPwd(@RequestParam("id") String id, @RequestParam("oldPwd") String oldPwd,
+                              @RequestParam("newPwd") String newPwd) {
         User user = UserRepository.findById(id);
 
-        if (user.getId()==null) {
+        if (user.getId() == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
         } else if (oldPwd.equals(user.getPassword())) {
             return new ResponseData(ExceptionMsg.FAILED, "旧密码错误");

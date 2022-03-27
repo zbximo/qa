@@ -23,8 +23,12 @@ public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
 
+    /**
+     * @param courseMap 课程信息
+     * @return
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addCourse(@RequestBody Course courseMap) throws Exception {
+    public ResponseData addCourse(@RequestBody Course courseMap) {
         if (courseMap == null) {
             return new ResponseData(ExceptionMsg.FAILED, "");
         }
@@ -36,20 +40,32 @@ public class CourseController {
         return new ResponseData(ExceptionMsg.SUCCESS, c);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Response deleteCourse(@PathVariable("id") String id) {
+    /**
+     * @param id 课程ID
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Response deleteCourse(@RequestParam("id") String id) {
         courseRepository.deleteByCourseId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
+    /**
+     * @param courseMap 课程信息
+     * @return
+     */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateCourse(@RequestBody Course courseMap) {
         courseRepository.save(courseMap);
         return new ResponseData(ExceptionMsg.SUCCESS, courseMap);
     }
 
-    @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET)
-    public ResponseData findById(@PathVariable("id") String id) {
+    /**
+     * @param id 课程ID
+     * @return
+     */
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public ResponseData findById(@RequestParam("id") String id) {
         Course course = courseRepository.findByCourseId(id);
         if (course != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, course);
@@ -57,8 +73,12 @@ public class CourseController {
         return new ResponseData(ExceptionMsg.FAILED, course);
     }
 
-    @RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
-    public ResponseData findByName(@PathVariable("name") String name) {
+    /**
+     * @param name 课程名称
+     * @return
+     */
+    @RequestMapping(value = "/findByName", method = RequestMethod.GET)
+    public ResponseData findByName(@RequestParam("name") String name) {
         List<Course> courseList = courseRepository.findByCourseName(name);
         if (courseList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, courseList);
@@ -66,6 +86,9 @@ public class CourseController {
         return new ResponseData(ExceptionMsg.FAILED, courseList);
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
         List<Course> courseList = courseRepository.findAll();
