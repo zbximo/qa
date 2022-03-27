@@ -24,19 +24,34 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     /**
-     * @desc 添加一个问卷填写表
-     *
      * @param answerMap 问卷填写表
      * @return
+     * @desc 添加一个问卷填写表
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addAnswer(@RequestBody Answer answerMap) {
-        ObjectId id = new ObjectId();
-        answerMap.setAnswerId(id.toString());
-        Answer answer = new Answer();
-        BeanUtils.copyProperties(answerMap, answer);
-        answerRepository.save(answer);
-        return new ResponseData(ExceptionMsg.SUCCESS, answer);
+//        System.out.println(answerMap.getUser().getId()+" "+
+//                answerMap.getFeedback().getFeedbackId());
+//        Answer answer = new Answer();
+//        ObjectId id = new ObjectId();
+//        answerMap.setAnswerId(id.toString());
+//        BeanUtils.copyProperties(answerMap, answer);
+//        answerRepository.save(answer);
+//        return new ResponseData(ExceptionMsg.SUCCESS, answer);
+
+        Answer answer = answerRepository.UserIdAndFeedbackId(answerMap.getUser().getId(),
+                answerMap.getFeedback().getFeedbackId());
+        if (answer == null) {
+            ObjectId id = new ObjectId();
+            answerMap.setAnswerId(id.toString());
+            BeanUtils.copyProperties(answerMap, answer);
+            answerRepository.save(answer);
+            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+        } else {
+            answerRepository.save(answerMap);
+            return new ResponseData(ExceptionMsg.SUCCESS, answerMap);
+        }
+
     }
 
     /**
@@ -91,7 +106,7 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findByFeedbackId", method = RequestMethod.GET)
     public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
-        Answer answer = answerRepository.UserId(feedbackId);
+        Answer answer = answerRepository.FeedbackId(feedbackId);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);
         }
@@ -105,7 +120,7 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findByUserAndFeedback", method = RequestMethod.GET)
     public ResponseData findByUserIdAndFeedbackId(@RequestParam("userId") String userId,
-                                              @RequestParam("feedbackId") String feedbackId) {
+                                                  @RequestParam("feedbackId") String feedbackId) {
         Answer answer = answerRepository.UserIdAndFeedbackId(userId, feedbackId);
         if (answer != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answer);

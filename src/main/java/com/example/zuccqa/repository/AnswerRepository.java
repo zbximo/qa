@@ -11,11 +11,11 @@ import org.springframework.data.mongodb.repository.Query;
  */
 public interface AnswerRepository extends MongoRepository<Answer,Integer> {
     Answer findByAnswerId(String answerId);
-    @Query(value = "{'$and':[{'User._id'=?0},{'Feedback._id'=?1}]}")
+    @Query(value = "{'$and':[{'User._id':'?0'},{'Feedback._id':'?1'}]}")
     Answer UserIdAndFeedbackId(String userId, String feedbackId);
-    @Query(value = "{'User._id'=?0}")
+    @Query(value = "{'User._id':'?0'}")
     Answer UserId(String userId);
-    @Query(value = "{'Feedback._id'=?0}")
+    @Query(value = "{'Feedback._id':'?0'}")
     Answer FeedbackId(String feedback);
-    Answer deleteByAnswerId(String answerId);
+    void deleteByAnswerId(String answerId);
 }
