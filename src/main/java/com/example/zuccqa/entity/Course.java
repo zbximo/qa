@@ -18,18 +18,33 @@ import java.util.Map;
 @Data
 @Document(collection = "Course")
 public class Course {
+    /**
+     * 课程ID
+     */
     @Id
     private String courseId;
 
+    /**
+     * 课程名
+     */
     @Field("className")
     private String courseName;
 
+    /**
+     * 学生列表
+     */
     @Field("stuList")
     private List<User> stuList;
 
+    /**
+     * 教师
+     */
     @Field("teacher")
     private User teacher;
 
-    @Field("courseData")
-    private Map<Integer,List<Integer>> courseData;
+    /**
+     * 课程时间
+     */
+    @Field("courseDate")
+    private Map<Integer,List<Integer>> courseDate;
 }

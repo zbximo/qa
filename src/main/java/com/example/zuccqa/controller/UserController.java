@@ -29,6 +29,10 @@ class UserController {
     @Autowired
     private UserRepository UserRepository;
 
+    /**
+     * @param userMap
+     * @return
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addUser(@RequestBody User userMap) {
         if (userMap == null) {

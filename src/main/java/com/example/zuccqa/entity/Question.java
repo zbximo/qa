@@ -14,8 +14,17 @@ import java.util.Optional;
 @Data
 //@Document(collection = "Question")
 public class Question {
+    /**
+     * 问题标题
+     */
     private String questionTitle;
+    /**
+     * 问题类型
+     */
     private int questionType;
+    /**
+     * 选项
+     */
     private List<String> options;
 
 }

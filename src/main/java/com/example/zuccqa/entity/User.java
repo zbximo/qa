@@ -15,14 +15,29 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Data
 @Document(collection = "Student")
 public class User {
+    /**
+     * 用户ID
+     */
     @Id
     private String id;
+    /**
+     * 用户姓名
+     */
     @Field("name")
     private String name;
+    /**
+     * 用户年龄
+     */
     @Field("age")
     private Integer age;
+    /**
+     * 用户密码
+     */
     @Field("password")
     private String password;
+    /**
+     * 用户身份
+     */
     @Field("position")
     private Integer position;
 }

@@ -3,7 +3,15 @@
 ### User（用户）
 
 + add
-
+```json
+{
+    "id":"31901022",
+    "name":"lx",
+    "age":20,
+    "password":"21389",
+    "position":1
+}
+```
 + delete
 + update
 + find

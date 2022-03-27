@@ -16,10 +16,19 @@ import java.util.List;
 @Data
 @Document(collection = "Model")
 public class Model {
+    /**
+     * 模版ID
+     */
     @Id
     private String modelID;
+    /**
+     * 模版名
+     */
     @Field("modelName")
     private String modelName;
+    /**
+     * 问题列表
+     */
     @Field("questionList")
     private List<Question> questionList;
 }

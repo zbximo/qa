@@ -18,14 +18,29 @@ import java.util.Map;
 @Document(collection = "Answer")
 // 问卷填写信息
 public class Answer {
+    /**
+     * 答案ID
+     */
     @Id
     private String answerId;
+    /**
+     * 用户
+     */
     @Field("student")
     private User user;
+    /**
+     * 问卷
+     */
     @Field("feedback")
     private Feedback feedback;
+    /**
+     * 答案列表
+     */
     @Field("answers")
     private List<List<String>> answer;
+    /**
+     * 时间
+     */
     @Field("date")
     private Date date;
 }
