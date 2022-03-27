@@ -44,8 +44,8 @@ class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userMap, user);
-        UserRepository.save(userMap);
-        return new ResponseData(ExceptionMsg.SUCCESS, userMap);
+        UserRepository.save(user);
+        return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
     /**
@@ -75,7 +75,7 @@ class UserController {
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
         User user = UserRepository.findById(id);
-        if (user==null){
+        if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, user);
         }
         return new ResponseData(ExceptionMsg.SUCCESS, user);
@@ -115,7 +115,7 @@ class UserController {
             return new ResponseData(ExceptionMsg.FAILED, "用户名密码不能为空");
         }
         User user = UserRepository.findById(id);
-        if (user.getId() == null) {
+        if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
         } else if (!user.getPassword().equals(password)) {
             return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
@@ -135,7 +135,7 @@ class UserController {
                               @RequestParam("newPwd") String newPwd) {
         User user = UserRepository.findById(id);
 
-        if (user.getId() == null) {
+        if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
         } else if (oldPwd.equals(user.getPassword())) {
             return new ResponseData(ExceptionMsg.FAILED, "旧密码错误");
