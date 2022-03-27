@@ -1870,12 +1870,12 @@
 **Request Demo:**
 
 ```json
-{ //用户信息
-    "id": "JG001", //用户ID
-    "name": "jj", //用户姓名
-    "age": 55, //用户年龄
-    "password": "JG001", //用户密码
-    "position": 1 //用户身份(0:学生,1:教师,2:管理员)
+{ 
+    "id": "JG001", 
+    "name": "jj", 
+    "age": 55, 
+    "password": "JG001", 
+    "position": 1 
 }
 ```
 
@@ -1946,12 +1946,12 @@
 **Request Demo:**
 
 ```json
-{ //用户信息
-    "id": "JG001", //用户ID
-    "name": "XXXX", //用户姓名
-    "age": 33, //用户年龄
-    "password": "132", //用户密码
-    "position": 1 //用户身份(0:学生,1:教师,2:管理员)
+{ 
+    "id": "JG001", 
+    "name": "XXXX", 
+    "age": 33, 
+    "password": "132", 
+    "position": 1 
 }
 ```
 
