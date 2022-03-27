@@ -30,8 +30,8 @@ public class AnswerController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addAnswer(@RequestBody Answer answerMap) {
-//        System.out.println(answerMap.getUser().getId()+" "+
-//                answerMap.getFeedback().getFeedbackId());
+        System.out.println(answerMap.getUser().getId()+" "+
+                answerMap.getFeedback().getFeedbackId());
 //        Answer answer = new Answer();
 //        ObjectId id = new ObjectId();
 //        answerMap.setAnswerId(id.toString());
@@ -41,7 +41,9 @@ public class AnswerController {
 
         Answer answer = answerRepository.UserIdAndFeedbackId(answerMap.getUser().getId(),
                 answerMap.getFeedback().getFeedbackId());
+        System.out.println(answer==null);
         if (answer == null) {
+            answer = new Answer();
             ObjectId id = new ObjectId();
             answerMap.setAnswerId(id.toString());
             BeanUtils.copyProperties(answerMap, answer);
