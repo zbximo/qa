@@ -15,32 +15,32 @@ import java.util.Map;
  * @description:
  */
 @Data
-@Document(collection = "Answer")
+@Document(collection = "AnswerSheet")
 // 问卷填写信息
-public class Answer {
+public class AnswerSheet {
     /**
-     * 答案ID
+     * 问卷表单ID
      */
     @Id
-    private String answerId;
+    private String answerSheetId;
     /**
-     * 用户
+     * 学生ID
      */
-    @Field("student")
-    private User user;
+    @Field("studentId")
+    private String studentId;
     /**
-     * 问卷
+     * 问卷ID
      */
-    @Field("feedback")
-    private Feedback feedback;
+    @Field("feedbackId")
+    private String feedbackId;
     /**
-     * 答案列表
+     * 回答列表
      */
     @Field("answers")
-    private List<List<String>> answer;
+    private List<List<String>> answers;
     /**
-     * 时间
+     * 提交时间
      */
-    @Field("date")
-    private Date date;
+    @Field("submitDate")
+    private Date submitDate;
 }

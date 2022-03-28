@@ -31,16 +31,16 @@ public class Course {
     private String courseName;
 
     /**
-     * 学生列表
+     * 学号列表
      */
-    @Field("stuList")
-    private List<User> stuList;
+    @Field("studentIdList")
+    private List<String> studentIdList;
 
     /**
      * 教师
      */
-    @Field("teacher")
-    private User teacher;
+    @Field("teacherId")
+    private String teacherId;
 
     /**
      * 课程时间 {周几:[第几节课]}

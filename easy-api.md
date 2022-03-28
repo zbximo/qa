@@ -462,7 +462,7 @@
 
 > BASIC
 
-**Path:** /answer/add
+**Path:** /answerSheet/add
 
 **Method:** POST
 
@@ -516,7 +516,7 @@
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─questionType | integer | 问题类型(0:单选题，1:多选题,2:主观题) |
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─options | array | 选项(列表长度:{0:主观题,1:单选题,2:多选题}) |
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─ | string |  |
-| answer | array | 答案列表 |
+| answerSheet | array | 答案列表 |
 | &ensp;&ensp;&#124;─ | array |  |
 | &ensp;&ensp;&ensp;&ensp;&#124;─ | string |  |
 | date | string | 时间 |
@@ -574,7 +574,7 @@
       }
     ]
   },
-  "answer": [
+  "answerSheet": [
     [
       ""
     ]
@@ -619,7 +619,7 @@
 
 > BASIC
 
-**Path:** /answer/delete
+**Path:** /answerSheet/delete
 
 **Method:** DELETE
 
@@ -671,7 +671,7 @@
 
 > BASIC
 
-**Path:** /answer/update
+**Path:** /answerSheet/update
 
 **Method:** PUT
 
@@ -725,7 +725,7 @@
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─questionType | integer | 问题类型(0:单选题，1:多选题,2:主观题) |
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─options | array | 选项(列表长度:{0:主观题,1:单选题,2:多选题}) |
 | &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#124;─ | string |  |
-| answer | array | 答案列表 |
+| answerSheet | array | 答案列表 |
 | &ensp;&ensp;&#124;─ | array |  |
 | &ensp;&ensp;&ensp;&ensp;&#124;─ | string |  |
 | date | string | 时间 |
@@ -783,7 +783,7 @@
       }
     ]
   },
-  "answer": [
+  "answerSheet": [
     [
       ""
     ]
@@ -828,7 +828,7 @@
 
 > BASIC
 
-**Path:** /answer/findById
+**Path:** /answerSheet/findById
 
 **Method:** GET
 
@@ -876,7 +876,7 @@
 
 > BASIC
 
-**Path:** /answer/findByUserAndFeedback
+**Path:** /answerSheet/findByUserAndFeedback
 
 **Method:** GET
 
@@ -924,7 +924,7 @@
 
 > BASIC
 
-**Path:** /answer/findByFeedback
+**Path:** /answerSheet/findByFeedback
 
 **Method:** GET
 
@@ -972,7 +972,7 @@
 
 > BASIC
 
-**Path:** /answer/findByUserAndFeedback
+**Path:** /answerSheet/findByUserAndFeedback
 
 **Method:** GET
 
@@ -1021,7 +1021,7 @@
 
 > BASIC
 
-**Path:** /answer/getAll
+**Path:** /answerSheet/getAll
 
 **Method:** GET
 

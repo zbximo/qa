@@ -23,10 +23,10 @@ public class Feedback {
     @Id
     private String feedbackId;
     /**
-     * 问卷课程
+     * 问卷课程ID
      */
-    @Field("feedbackCourse")
-    private Course feedbackCourse;
+    @Field("feedbackCourseId")
+    private String feedbackCourseId;
     /**
      * 问卷标题
      */

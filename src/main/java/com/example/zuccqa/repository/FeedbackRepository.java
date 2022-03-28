@@ -9,7 +9,7 @@ import java.util.List;
 public interface FeedbackRepository extends MongoRepository<Feedback, Integer> {
     Feedback findByFeedbackId(String feedbackId);
 
-    @Query(value = "{'feedbackCourse._id':?0}")
+    @Query(value = "{'feedbackCourseId':?0}")
     List<Feedback> find(String feedbackCourseId);
 
     void deleteByFeedbackId(String feedbackId);

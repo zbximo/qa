@@ -1,6 +1,6 @@
 package com.example.zuccqa.controller;
 
-import com.example.zuccqa.entity.Answer;
+import com.example.zuccqa.entity.AnswerSheet;
 import com.example.zuccqa.repository.AnswerRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
@@ -24,14 +24,14 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     /**
-     * @param answerMap 问卷填写表
+     * @param answerSheetMap 问卷填写表
      * @return
      * @desc 添加一个问卷填写表
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addAnswer(@RequestBody Answer answerMap) {
-        System.out.println(answerMap.getUser().getId()+" "+
-                answerMap.getFeedback().getFeedbackId());
+    public ResponseData addAnswer(@RequestBody AnswerSheet answerSheetMap) {
+//        System.out.println(answerMap.getUser().getId()+" "+
+//                answerMap.getFeedback().getFeedbackId());
 //        Answer answer = new Answer();
 //        ObjectId id = new ObjectId();
 //        answerMap.setAnswerId(id.toString());
@@ -39,19 +39,17 @@ public class AnswerController {
 //        answerRepository.save(answer);
 //        return new ResponseData(ExceptionMsg.SUCCESS, answer);
 
-        Answer answer = answerRepository.UserIdAndFeedbackId(answerMap.getUser().getId(),
-                answerMap.getFeedback().getFeedbackId());
-        System.out.println(answer==null);
-        if (answer == null) {
-            answer = new Answer();
+        AnswerSheet answerSheet = answerRepository.UserIdAndFeedbackId(answerSheetMap.getStudentId(),
+                answerSheetMap.getFeedbackId());
+        if (answerSheet == null) {
             ObjectId id = new ObjectId();
-            answerMap.setAnswerId(id.toString());
-            BeanUtils.copyProperties(answerMap, answer);
-            answerRepository.save(answer);
-            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+            answerSheetMap.setAnswerSheetId(id.toString());
+            BeanUtils.copyProperties(answerSheetMap, answerSheet);
+            answerRepository.save(answerSheet);
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         } else {
-            answerRepository.save(answerMap);
-            return new ResponseData(ExceptionMsg.SUCCESS, answerMap);
+            answerRepository.save(answerSheetMap);
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
         }
 
     }
@@ -62,18 +60,18 @@ public class AnswerController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteAnswer(@RequestParam("id") String id) {
-        answerRepository.deleteByAnswerId(id);
+        answerRepository.deleteByAnswerSheetId(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
     /**
-     * @param answerMap 问卷填写表信息
+     * @param answerSheetMap 问卷填写表信息
      * @return
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseData updateAnswer(@RequestBody Answer answerMap) {
-        answerRepository.save(answerMap);
-        return new ResponseData(ExceptionMsg.SUCCESS, answerMap);
+    public ResponseData updateAnswer(@RequestBody AnswerSheet answerSheetMap) {
+        answerRepository.save(answerSheetMap);
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
     }
 
     /**
@@ -82,11 +80,11 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        Answer answer = answerRepository.findByAnswerId(id);
-        if (answer != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+        AnswerSheet answerSheet = answerRepository.findByAnswerId(id);
+        if (answerSheet != null) {
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         }
-        return new ResponseData(ExceptionMsg.FAILED, answer);
+        return new ResponseData(ExceptionMsg.FAILED, answerSheet);
     }
 
     /**
@@ -95,11 +93,11 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findByUserId", method = RequestMethod.GET)
     public ResponseData findByUserId(@RequestParam("userId") String userId) {
-        Answer answer = answerRepository.UserId(userId);
-        if (answer != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+        AnswerSheet answerSheet = answerRepository.UserId(userId);
+        if (answerSheet != null) {
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         }
-        return new ResponseData(ExceptionMsg.FAILED, answer);
+        return new ResponseData(ExceptionMsg.FAILED, answerSheet);
     }
 
     /**
@@ -108,11 +106,11 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findByFeedbackId", method = RequestMethod.GET)
     public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
-        Answer answer = answerRepository.FeedbackId(feedbackId);
-        if (answer != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+        AnswerSheet answerSheet = answerRepository.FeedbackId(feedbackId);
+        if (answerSheet != null) {
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         }
-        return new ResponseData(ExceptionMsg.FAILED, answer);
+        return new ResponseData(ExceptionMsg.FAILED, answerSheet);
     }
 
     /**
@@ -123,11 +121,11 @@ public class AnswerController {
     @RequestMapping(value = "/findByUserAndFeedback", method = RequestMethod.GET)
     public ResponseData findByUserIdAndFeedbackId(@RequestParam("userId") String userId,
                                                   @RequestParam("feedbackId") String feedbackId) {
-        Answer answer = answerRepository.UserIdAndFeedbackId(userId, feedbackId);
-        if (answer != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answer);
+        AnswerSheet answerSheet = answerRepository.UserIdAndFeedbackId(userId, feedbackId);
+        if (answerSheet != null) {
+            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         }
-        return new ResponseData(ExceptionMsg.FAILED, answer);
+        return new ResponseData(ExceptionMsg.FAILED, answerSheet);
     }
 
     /**
@@ -135,8 +133,8 @@ public class AnswerController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<Answer> answerList = answerRepository.findAll();
-        return new ResponseData(ExceptionMsg.SUCCESS, answerList);
+        List<AnswerSheet> answerSheetList = answerRepository.findAll();
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 
 }
