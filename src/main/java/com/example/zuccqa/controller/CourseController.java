@@ -70,7 +70,8 @@ public class CourseController {
         if (course != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, course);
         }
-        return new ResponseData(ExceptionMsg.FAILED, course);
+        else
+            return new ResponseData(ExceptionMsg.FAILED, course);
     }
 
     /**

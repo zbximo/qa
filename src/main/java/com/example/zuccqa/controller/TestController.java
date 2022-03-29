@@ -16,6 +16,7 @@ import javax.validation.ValidationException;
  */
 @RestController
 public class TestController {
+
     @RequestMapping("/BusinessException")
     public String testResponseStatusExceptionResolver(@RequestParam("i") int i){
         if (i==0){

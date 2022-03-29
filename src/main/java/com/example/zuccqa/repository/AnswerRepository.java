@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.repository.Query;
  * @description:
  */
 public interface AnswerRepository extends MongoRepository<AnswerSheet,Integer> {
-    AnswerSheet findByAnswerId(String answerId);
+    AnswerSheet findByAnswerSheetId(String answerId);
     @Query(value = "{'$and':[{'studentId':'?0'},{'feedbackId':'?1'}]}")
     AnswerSheet UserIdAndFeedbackId(String userId, String feedbackId);
     @Query(value = "{'studentId':'?0'}")

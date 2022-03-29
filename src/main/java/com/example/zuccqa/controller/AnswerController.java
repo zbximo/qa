@@ -42,6 +42,7 @@ public class AnswerController {
         AnswerSheet answerSheet = answerRepository.UserIdAndFeedbackId(answerSheetMap.getStudentId(),
                 answerSheetMap.getFeedbackId());
         if (answerSheet == null) {
+            answerSheet = new AnswerSheet();
             ObjectId id = new ObjectId();
             answerSheetMap.setAnswerSheetId(id.toString());
             BeanUtils.copyProperties(answerSheetMap, answerSheet);
@@ -80,7 +81,7 @@ public class AnswerController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        AnswerSheet answerSheet = answerRepository.findByAnswerId(id);
+        AnswerSheet answerSheet = answerRepository.findByAnswerSheetId(id);
         if (answerSheet != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
         }
