@@ -42,6 +42,7 @@ public class AnswerController {
         AnswerSheet answerSheet = answerRepository.UserIdAndFeedbackId(answerSheetMap.getStudentId(),
                 answerSheetMap.getFeedbackId());
         if (answerSheet == null) {
+            answerSheet = new AnswerSheet();
             ObjectId id = new ObjectId();
             answerSheetMap.setAnswerSheetId(id.toString());
             BeanUtils.copyProperties(answerSheetMap, answerSheet);
