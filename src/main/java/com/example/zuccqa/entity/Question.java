@@ -23,6 +23,10 @@ public class Question {
      */
     private int questionType;
     /**
+     * 是否必填(0:否，1:是)
+     */
+    private String isRequired;
+    /**
      * 选项(列表长度: {0:主观题,1:单选题,2:多选题})
      */
     private List<String> options;
