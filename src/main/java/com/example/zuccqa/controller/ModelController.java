@@ -33,7 +33,7 @@ public class ModelController {
     public ResponseData addModel(@RequestBody Model modelMap) {
 
         String modelId = modelService.addModel(modelMap);
-        logger.warn("create model id = {}", modelId);
+        logger.warn("create model id: {}", modelId);
         return new ResponseData(ExceptionMsg.SUCCESS, modelId);
     }
 
@@ -44,7 +44,7 @@ public class ModelController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteModel(@RequestParam("id") String id) {
         String modelId = modelService.deleteModel(id);
-        logger.warn("delete model id = {}", modelId);
+        logger.warn("delete model id: {}", modelId);
 
         return new Response(ExceptionMsg.SUCCESS);
     }
@@ -57,31 +57,35 @@ public class ModelController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateModel(@RequestBody Model modelMap) {
         String modelId = modelService.updateModel(modelMap);
-        logger.warn("update model id = {}", modelId);
+        logger.warn("update model id: {}", modelId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, modelMap);
     }
 
     /**
+     * 通过模板ID获取模板信息
+     *
      * @param id 模板ID
      * @return
      */
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
-    public ResponseData findById(@RequestParam("id") String id) {
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public ResponseData viewModelById(@RequestParam("id") String id) {
         Model model = modelService.findById(id);
-        logger.warn("query model id = {}", id);
+        logger.warn("query model id: {}", id);
 
         return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
 
     /**
+     * 通过模板名称获取模板
+     *
      * @param name 模板名称
      * @return
      */
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
-    public ResponseData findByName(@RequestParam("name") String name) {
+    public ResponseData viewModelByName(@RequestParam("name") String name) {
         List<Model> modelList = modelService.findByName(name);
-        logger.warn("query model id = {}", name);
+        logger.warn("query model id: {}", name);
 
         return new ResponseData(ExceptionMsg.SUCCESS, modelList);
     }

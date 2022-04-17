@@ -31,10 +31,10 @@ public class AnswerSheetController {
      * @desc 添加一个问卷填写表
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData addAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
+    public ResponseData submitAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
 
         String answerSheetId = answerSheetService.addAnswerSheet(answerSheetMap);
-        logger.warn("create answerSheets answerSheetId = {}", answerSheetId);
+        logger.warn("create answerSheet answerSheetId: {}", answerSheetId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
 
@@ -48,7 +48,7 @@ public class AnswerSheetController {
     public Response deleteAnswerSheet(@RequestParam("id") String id) {
 
         String answerSheetId = answerSheetService.deleteAnswerSheet(id);
-        logger.warn("delete answerSheets answerSheetId = {}", answerSheetId);
+        logger.warn("delete answerSheets answerSheetId: {}", answerSheetId);
 
         return new Response(ExceptionMsg.SUCCESS);
     }
@@ -60,65 +60,75 @@ public class AnswerSheetController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
         String answerSheetId = answerSheetService.updateAnswerSheet(answerSheetMap);
-        logger.warn("update answerSheets answerSheetId = {}", answerSheetId);
+        logger.warn("update answerSheets answerSheetId: {}", answerSheetId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
     }
 
     /**
+     * 通过答卷ID查看答卷
+     *
      * @param id 问卷填写表ID
      * @return
      */
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public ResponseData findById(@RequestParam("id") String id) {
+    @RequestMapping(value = "/viewAnswerSheetById", method = RequestMethod.GET)
+    public ResponseData viewAnswerSheetById(@RequestParam("id") String id) {
 
         AnswerSheet answerSheet = answerSheetService.findById(id);
-        logger.warn("query answerSheets answerSheetId = {}", id);
+        logger.warn("query answerSheets answerSheetId: {}", id);
 
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
 
     }
 
     /**
+     * 通过用户ID查看该用户的所有答卷
+     *
      * @param userId 用户ID
      * @return
      */
-    @RequestMapping(value = "/findByUserId", method = RequestMethod.GET)
+    @RequestMapping(value = "/viewAnswerSheetByUserId", method = RequestMethod.GET)
     public ResponseData findByUserId(@RequestParam("userId") String userId) {
 
         List<AnswerSheet> answerSheetList = answerSheetService.findByUserId(userId);
-        logger.warn("query answerSheets userId = {}", userId);
+        logger.warn("query answerSheets userId: {}", userId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 
     /**
+     * 通过问卷ID查看该问卷的所有答卷
+     *
      * @param feedbackId 问卷ID
      * @return
      */
-    @RequestMapping(value = "/findByFeedbackId", method = RequestMethod.GET)
+    @RequestMapping(value = "/viewAnswerSheetsByFeedbackId", method = RequestMethod.GET)
     public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
 
         List<AnswerSheet> answerSheetList = answerSheetService.findByFeedbackId(feedbackId);
-        logger.warn("query answerSheets feedbackId = {}", feedbackId);
+        logger.warn("query answerSheets feedbackId: {}", feedbackId);
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 
     /**
+     * 通过用户ID和问卷ID查看某个人的某个问卷的答卷
+     *
      * @param userId     用户ID
      * @param feedbackId 问卷ID
      * @return
      */
-    @RequestMapping(value = "/findByUserAndFeedback", method = RequestMethod.GET)
+    @RequestMapping(value = "/viewAnswerSheetByUserAndFeedback", method = RequestMethod.GET)
     public ResponseData getOneAnswerSheet(@RequestParam("userId") String userId,
                                           @RequestParam("feedbackId") String feedbackId) {
 
         AnswerSheet answerSheet = answerSheetService.findByUserIdAndFeedbackId(userId, feedbackId);
-        logger.warn("query answerSheet userId = {},feedbackId = {}", userId, feedbackId);
+        logger.warn("query answerSheet userId: {},feedbackId: {}", userId, feedbackId);
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
     }
 
     /**
+     * 获取所有答卷
+     *
      * @return
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)

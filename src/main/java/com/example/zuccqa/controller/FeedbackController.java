@@ -31,7 +31,7 @@ public class FeedbackController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addFeedback(@RequestBody Feedback feedbackMap) {
         String feedbackId = feedbackService.addFeedback(feedbackMap);
-        logger.warn("create feedback id = {}", feedbackId);
+        logger.warn("create feedback id: {}", feedbackId);
         return new ResponseData(ExceptionMsg.SUCCESS, feedbackId);
     }
 
@@ -42,7 +42,7 @@ public class FeedbackController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteFeedback(@RequestParam("id") String id) {
         String feedbackId = feedbackService.deleteFeedback(id);
-        logger.warn("delete feedback id = {}", feedbackId);
+        logger.warn("delete feedback id: {}", feedbackId);
 
         return new Response(ExceptionMsg.SUCCESS);
     }
@@ -55,32 +55,36 @@ public class FeedbackController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateFeedback(@RequestBody Feedback feedbackMap) {
         String feedbackId = feedbackService.updateFeedback(feedbackMap);
-        logger.warn("update feedback id = {}", feedbackId);
+        logger.warn("update feedback id: {}", feedbackId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, feedbackMap);
     }
 
     /**
+     * 通过问卷ID获取问卷信息
+     *
      * @param id 问卷ID
      * @return
      */
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public ResponseData findById(@RequestParam("id") String id) {
+    @RequestMapping(value = "/viewFeedbackById", method = RequestMethod.GET)
+    public ResponseData viewFeedbackById(@RequestParam("id") String id) {
         Feedback feedback = feedbackService.findById(id);
-        logger.warn("query feedback id = {}", feedback.getFeedbackId());
+        logger.warn("query feedback id: {}", feedback.getFeedbackId());
 
         return new ResponseData(ExceptionMsg.SUCCESS, feedback);
 
     }
 
     /**
+     * 通过课程ID获取该课程的所有问卷
+     *
      * @param courseId 课程ID
      * @return
      */
-    @RequestMapping(value = "/findByCourseId", method = RequestMethod.GET)
-    public ResponseData findByCourseId(@RequestParam("courseId") String courseId) {
+    @RequestMapping(value = "/viewFeedbacksByCourseId", method = RequestMethod.GET)
+    public ResponseData viewFeedbacksByCourseId(@RequestParam("courseId") String courseId) {
         List<Feedback> feedback = feedbackService.findByCourseId(courseId);
-        logger.warn("query feedbacks courseId = {}", courseId);
+        logger.warn("query feedbacks courseId: {}", courseId);
 
         return new ResponseData(ExceptionMsg.SUCCESS, feedback);
     }

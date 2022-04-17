@@ -26,17 +26,18 @@ public class UserServiceImpl implements UserService {
      * @param userMap 用户信息
      * @return
      */
+    @Override
     public String addUser(User userMap) {
         User user = new User();
         BeanUtils.copyProperties(userMap, user);
         System.out.println(user.getId());
         if (user.getId() == null || user.getId().equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户账号为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户账号为空");
         } else if (userRepository.findById(userMap.getId())!=null){
-            throw new BusinessException(Constant.ParamError, "用户名已存在");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户名已存在");
         }
         else if (user.getPassword() == null || user.getPassword().equals("")) {
-            throw new BusinessException(Constant.ParamError, "密码为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "密码为空");
         }
         userRepository.save(user);
         return user.getId();
@@ -46,14 +47,15 @@ public class UserServiceImpl implements UserService {
      * @param userMap 用户信息
      * @return
      */
+    @Override
     public String updateUser(User userMap) {
         User user = new User();
         BeanUtils.copyProperties(userMap, user);
         if (user.getId() == null || user.getId().equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户Id为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户Id为空");
         }
         if (userRepository.findById(user.getId()) == null) {
-            throw new BusinessException(Constant.QueryEmpty, "找不到该用户: 用户Id: " + user.getId() + ", 不能更新");
+            throw new BusinessException(Constant.QUERY_EMPTY, "找不到该用户: 用户Id: " + user.getId() + ", 不能更新");
         }
         userRepository.save(userMap);
         return user.getId();
@@ -63,12 +65,13 @@ public class UserServiceImpl implements UserService {
      * @param id 用户ID
      * @return
      */
+    @Override
     public String deleteUser(String id) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户ID为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户ID为空");
         }
         if (userRepository.findById(id) == null) {
-            throw new BusinessException(Constant.QueryEmpty, "找不到该用户: 用户Id: " + id + ", 不能删除");
+            throw new BusinessException(Constant.QUERY_EMPTY, "找不到该用户: 用户Id: " + id + ", 不能删除");
         }
         userRepository.deleteById(id);
         return id;
@@ -78,13 +81,14 @@ public class UserServiceImpl implements UserService {
      * @param id 用户ID
      * @return
      */
+    @Override
     public User findById(String id) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户ID为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户ID为空");
         }
         User user = userRepository.findById(id);
         if (user == null) {
-            throw new BusinessException(Constant.QueryEmpty, "找不到该用户: 用户Id: " + id);
+            throw new BusinessException(Constant.QUERY_EMPTY, "找不到该用户: 用户Id: " + id);
         }
         return user;
     }
@@ -93,13 +97,14 @@ public class UserServiceImpl implements UserService {
      * @param name 用户姓名
      * @return
      */
+    @Override
     public List<User> findByName(String name) {
         if (name.equals("")) {
-            throw new BusinessException(Constant.ParamError, "姓名为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "姓名为空");
         }
         List<User> userList = userRepository.findByName(name);
         if (userList.size() == 0) {
-            throw new BusinessException(Constant.QueryEmpty, "找不到该用户: 用户姓名: " + name);
+            throw new BusinessException(Constant.QUERY_EMPTY, "找不到该用户: 用户姓名: " + name);
         }
         return userList;
     }
@@ -107,6 +112,7 @@ public class UserServiceImpl implements UserService {
     /**
      * @return
      */
+    @Override
     public List<User> getAll() {
         return userRepository.findAll();
     }
@@ -117,15 +123,16 @@ public class UserServiceImpl implements UserService {
      * @param password 用户密码
      * @return
      */
+    @Override
     public String login(String id, String password) {
         if (id.equals("") || password.equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户名密码不能为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户名密码不能为空");
         }
         User user = userRepository.findById(id);
         if (user == null) {
-            throw new BusinessException(Constant.QueryEmpty, "用户不存在");
+            throw new BusinessException(Constant.QUERY_EMPTY, "用户不存在");
         } else if (!user.getPassword().equals(password)) {
-            throw new BusinessException(Constant.QueryEmpty, "密码错误");
+            throw new BusinessException(Constant.QUERY_EMPTY, "密码错误");
         } else {
             return id;
         }
@@ -137,17 +144,18 @@ public class UserServiceImpl implements UserService {
      * @param newPwd 用户新密码
      * @return
      */
+    @Override
     public String modifyPwd(String id, String oldPwd,
                              String newPwd) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.ParamError, "用户ID不能为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "用户ID不能为空");
         }
         User user = userRepository.findById(id);
 
         if (user == null) {
-            throw new BusinessException(Constant.QueryEmpty, "用户不存在");
+            throw new BusinessException(Constant.QUERY_EMPTY, "用户不存在");
         } else if (!oldPwd.equals(user.getPassword())) {
-            throw new BusinessException(Constant.QueryEmpty, "旧密码错误");
+            throw new BusinessException(Constant.QUERY_EMPTY, "旧密码错误");
         } else {
             user.setPassword(newPwd);
             userRepository.save(user);

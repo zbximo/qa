@@ -32,29 +32,31 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @param feedbackMap 问卷信息
      * @return
      */
+    @Override
     public String addFeedback(Feedback feedbackMap) {
         Feedback feedback = new Feedback();
         BeanUtils.copyProperties(feedbackMap, feedback);
-        if (feedbackMap.getFeedbackTitle() == null || feedbackMap.getFeedbackTitle().equals("")) {
-            throw new BusinessException(Constant.ParamError, "模板名称为空");
+        if (feedback.getFeedbackTitle() == null || feedback.getFeedbackTitle().equals("")) {
+            throw new BusinessException(Constant.PARAM_ERROR, "模板名称为空");
         }
         ObjectId id = new ObjectId();
-        feedbackMap.setFeedbackId(id.toString());
+        feedback.setFeedbackId(id.toString());
 
         feedbackRepository.save(feedback);
-        return feedbackMap.getFeedbackId();
+        return feedback.getFeedbackId();
     }
 
     /**
      * @param id 问卷ID
      * @return
      */
+    @Override
     public String deleteFeedback(String id) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.ParamError, "问卷ID不能为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
         }
         if (feedbackRepository.findByFeedbackId(id) == null) {
-            throw new BusinessException(Constant.ParamError, "找不到该问卷, 问卷ID: " + id);
+            throw new BusinessException(Constant.PARAM_ERROR, "找不到该问卷, 问卷ID: " + id);
         }
         feedbackRepository.deleteByFeedbackId(id);
         return id;
@@ -65,14 +67,15 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @param feedbackMap 问卷信息
      * @return
      */
+    @Override
     public String updateFeedback(Feedback feedbackMap) {
         Feedback feedback = new Feedback();
         BeanUtils.copyProperties(feedbackMap, feedback);
         if (feedback.getFeedbackId() == null || feedback.getFeedbackId().equals("")) {
-            throw new BusinessException(Constant.ParamError, "问卷ID不能为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
         }
         if (feedbackRepository.findByFeedbackId(feedback.getFeedbackId()) == null) {
-            throw new BusinessException(Constant.ParamError, "找不到该问卷, 问卷ID: " + feedback.getFeedbackId());
+            throw new BusinessException(Constant.PARAM_ERROR, "找不到该问卷, 问卷ID: " + feedback.getFeedbackId());
         }
         feedbackRepository.save(feedbackMap);
         return feedback.getFeedbackId();
@@ -82,13 +85,14 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @param feedBackId 问卷ID
      * @return
      */
+    @Override
     public Feedback findById(String feedBackId) {
         if (feedBackId.equals("")) {
-            throw new BusinessException(Constant.ParamError, "问卷ID不能为空");
+            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
         }
         Feedback feedback = feedbackRepository.findByFeedbackId(feedBackId);
         if (feedback == null) {
-            throw new BusinessException(Constant.ParamError, "未找到该问卷, 问卷ID: " + feedBackId);
+            throw new BusinessException(Constant.PARAM_ERROR, "未找到该问卷, 问卷ID: " + feedBackId);
         }
         return feedback;
     }
@@ -97,11 +101,12 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @param courseId 课程ID
      * @return
      */
+    @Override
     public List<Feedback> findByCourseId(String courseId) {
         courseService.findById(courseId);
         List<Feedback> feedbackList = feedbackRepository.find(courseId);
         if (feedbackList.size() == 0) {
-            throw new BusinessException(Constant.ParamError, "未找到该课程的问卷, 课程ID: " + courseId);
+            throw new BusinessException(Constant.PARAM_ERROR, "未找到该课程的问卷, 课程ID: " + courseId);
         }
         return feedbackList;
     }
@@ -109,6 +114,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * @return
      */
+    @Override
     public List<Feedback> getAll() {
         return feedbackRepository.findAll();
     }

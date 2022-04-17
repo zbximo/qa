@@ -34,7 +34,7 @@ class UserController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addUser(@RequestBody User userMap) {
         String id = userService.addUser(userMap);
-        logger.warn("create student id = {} ", id);
+        logger.warn("create student id: {} ", id);
         return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
@@ -45,7 +45,7 @@ class UserController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateUser(@RequestBody User userMap) {
         String id = userService.updateUser(userMap);
-        logger.warn("update student id = {} ", id);
+        logger.warn("update student id: {} ", id);
         return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
@@ -56,29 +56,33 @@ class UserController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteUser(@RequestParam("id") String id) {
         String sid = userService.deleteUser(id);
-        logger.warn("delete student id = {} ", sid);
+        logger.warn("delete student id: {} ", sid);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
     /**
+     * 通过用户ID获取用户信息
+     *
      * @param id 用户ID
      * @return
      */
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public ResponseData findById(@RequestParam("id") String id) {
+    @RequestMapping(value = "/viewUserById", method = RequestMethod.GET)
+    public ResponseData viewUserById(@RequestParam("id") String id) {
         User user = userService.findById(id);
-        logger.warn("query student id = {}", id);
+        logger.warn("query student id: {}", id);
         return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
     /**
+     * 通过用户名称获取用户信息
+     *
      * @param name 用户姓名
      * @return
      */
-    @RequestMapping(value = "/findByName", method = RequestMethod.GET)
-    public ResponseData findByName(@RequestParam("name") String name) {
+    @RequestMapping(value = "/viewUsersByName", method = RequestMethod.GET)
+    public ResponseData viewUserByName(@RequestParam("name") String name) {
         List<User> userList = userService.findByName(name);
-        logger.warn("query students name = {}", name);
+        logger.warn("query students name: {}", name);
         return new ResponseData(ExceptionMsg.SUCCESS, userList);
     }
 
@@ -94,6 +98,8 @@ class UserController {
 
 
     /**
+     * 通过账号密码实现登陆
+     *
      * @param id       用户ID
      * @param password 用户密码
      * @return
@@ -102,7 +108,7 @@ class UserController {
     public Response login(@RequestParam("id") String id, @RequestParam("password") String password) {
 
         String userId = userService.login(id, password);
-        logger.info("student {} login", userId);
+        logger.info("student id: {} login", userId);
         return new ResponseData(ExceptionMsg.SUCCESS, userId);
     }
 
@@ -117,7 +123,7 @@ class UserController {
                               @RequestParam("newPwd") String newPwd) {
 
         String userId = userService.modifyPwd(id, oldPwd, newPwd);
-        logger.warn("student {} modified password", userId);
+        logger.warn("student id: {} modified password", userId);
         return new ResponseData(ExceptionMsg.SUCCESS, userId);
     }
 }

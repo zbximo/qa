@@ -33,7 +33,7 @@ public class CourseController {
     public ResponseData addCourse(@RequestBody Course courseMap) {
 
         String id = courseService.addCourse(courseMap);
-        logger.warn("create course id = {}", id);
+        logger.warn("create course id: {}", id);
         return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
@@ -44,7 +44,7 @@ public class CourseController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteCourse(@RequestParam("id") String id) {
         String courseId = courseService.deleteCourse(id);
-        logger.warn("delete course id = {}", courseId);
+        logger.warn("delete course id: {}", courseId);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
@@ -55,31 +55,61 @@ public class CourseController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateCourse(@RequestBody Course courseMap) {
         String id = courseService.updateCourse(courseMap);
-        logger.warn("update course id = {}", id);
+        logger.warn("update course id: {}", id);
 
         return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
     /**
+     * 通过课程ID获取课程信息
+     *
      * @param id 课程ID
      * @return
      */
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    @RequestMapping(value = "/viewCourseById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
         Course course = courseService.findById(id);
-        logger.warn("query course id = {}", id);
+        logger.warn("query course id: {}", id);
         return new ResponseData(ExceptionMsg.SUCCESS, course);
     }
 
     /**
+     * 通过课程名获取到课程信息
+     *
      * @param name 课程名称
      * @return
      */
-    @RequestMapping(value = "/findByName", method = RequestMethod.GET)
-    public ResponseData findByName(@RequestParam("name") String name) {
+    @RequestMapping(value = "/viewCourseByName", method = RequestMethod.GET)
+    public ResponseData viewCourseByName(@RequestParam("name") String name) {
         List<Course> courseList = courseService.findByName(name);
-        logger.warn("query courses name = {}", name);
+        logger.warn("query courses name: {}", name);
         return new ResponseData(ExceptionMsg.SUCCESS, courseList);
+    }
+
+    /**
+     * 关闭课程
+     *
+     * @param id 课程Id
+     * @return
+     */
+    @RequestMapping(value = "/closeCourseById", method = RequestMethod.GET)
+    public ResponseData closeCourseById(@RequestParam("id") String id) {
+        String courseId = courseService.closeCourse(id);
+        logger.warn("close courses id: {}", courseId);
+        return new ResponseData(ExceptionMsg.SUCCESS, courseId);
+    }
+
+    /**
+     * 开启课程
+     *
+     * @param id 课程Id
+     * @return
+     */
+    @RequestMapping(value = "/openCourseById", method = RequestMethod.GET)
+    public ResponseData openCourseById(@RequestParam("id") String id) {
+        String courseId = courseService.openCourse(id);
+        logger.warn("open courses id: {}", courseId);
+        return new ResponseData(ExceptionMsg.SUCCESS, courseId);
     }
 
     /**

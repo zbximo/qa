@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * @author: ximo
@@ -37,7 +37,7 @@ public class AnswerSheet {
      * 回答列表
      */
     @Field("answers")
-    private List<List<String>> answers;
+    private List<Question> answers;
     /**
      * 提交时间
      */

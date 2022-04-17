@@ -1,13 +1,11 @@
 package com.example.zuccqa.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -47,4 +45,9 @@ public class Course {
      */
     @Field("courseDate")
     private Map<Integer, List<Integer>> courseDate;
+    /**
+     * 是否关闭{0:开放, 1:关闭}
+     */
+    @Field("is_close")
+    private Integer isClose;
 }

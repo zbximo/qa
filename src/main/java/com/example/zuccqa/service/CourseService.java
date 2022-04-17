@@ -18,4 +18,8 @@ public interface CourseService {
     List<Course> findByName(String name);
 
     List<Course> getAll();
+
+    String closeCourse(String id);
+
+    String openCourse(String id);
 }

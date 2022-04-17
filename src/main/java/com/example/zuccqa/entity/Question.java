@@ -1,10 +1,9 @@
 package com.example.zuccqa.entity;
 
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
+
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author: ximo
@@ -25,7 +24,7 @@ public class Question {
     /**
      * 是否必填(0:否，1:是)
      */
-    private String isRequired;
+    private Integer isRequired;
     /**
      * 选项(列表长度: {0:主观题,1:单选题,2:多选题})
      */
