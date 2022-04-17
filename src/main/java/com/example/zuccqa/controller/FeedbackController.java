@@ -1,12 +1,12 @@
 package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.Feedback;
-import com.example.zuccqa.repository.FeedbackRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
-import org.bson.types.ObjectId;
-import org.springframework.beans.BeanUtils;
+import com.example.zuccqa.service.FeedbackService;
+
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(FeedbackController.class);
     @Autowired
-    private FeedbackRepository feedbackRepository;
+    private FeedbackService feedbackService;
 
     /**
      * @param feedbackMap 问卷信息
@@ -29,15 +30,9 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addFeedback(@RequestBody Feedback feedbackMap) {
-        if (feedbackMap == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "");
-        }
-        ObjectId id = new ObjectId();
-        feedbackMap.setFeedbackId(id.toString());
-        Feedback feedback = new Feedback();
-        BeanUtils.copyProperties(feedbackMap, feedback);
-        feedbackRepository.save(feedback);
-        return new ResponseData(ExceptionMsg.SUCCESS, feedback);
+        String feedbackId = feedbackService.addFeedback(feedbackMap);
+        logger.warn("create feedback id = {}", feedbackId);
+        return new ResponseData(ExceptionMsg.SUCCESS, feedbackId);
     }
 
     /**
@@ -46,7 +41,9 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteFeedback(@RequestParam("id") String id) {
-        feedbackRepository.deleteByFeedbackId(id);
+        String feedbackId = feedbackService.deleteFeedback(id);
+        logger.warn("delete feedback id = {}", feedbackId);
+
         return new Response(ExceptionMsg.SUCCESS);
     }
 
@@ -57,7 +54,9 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateFeedback(@RequestBody Feedback feedbackMap) {
-        feedbackRepository.save(feedbackMap);
+        String feedbackId = feedbackService.updateFeedback(feedbackMap);
+        logger.warn("update feedback id = {}", feedbackId);
+
         return new ResponseData(ExceptionMsg.SUCCESS, feedbackMap);
     }
 
@@ -67,11 +66,11 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        Feedback feedback = feedbackRepository.findByFeedbackId(id);
-        if (feedback != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, feedback);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        Feedback feedback = feedbackService.findById(id);
+        logger.warn("query feedback id = {}", feedback.getFeedbackId());
+
+        return new ResponseData(ExceptionMsg.SUCCESS, feedback);
+
     }
 
     /**
@@ -80,12 +79,10 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/findByCourseId", method = RequestMethod.GET)
     public ResponseData findByCourseId(@RequestParam("courseId") String courseId) {
-        System.out.println(courseId);
-        List<Feedback> feedback = feedbackRepository.find(courseId);
-        if (feedback.size() > 0) {
-            return new ResponseData(ExceptionMsg.SUCCESS, feedback);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        List<Feedback> feedback = feedbackService.findByCourseId(courseId);
+        logger.warn("query feedbacks courseId = {}", courseId);
+
+        return new ResponseData(ExceptionMsg.SUCCESS, feedback);
     }
 
     /**
@@ -93,7 +90,9 @@ public class FeedbackController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<Feedback> feedbackList = feedbackRepository.findAll();
+        List<Feedback> feedbackList = feedbackService.getAll();
+        logger.warn("query all feedbacks");
+
         return new ResponseData(ExceptionMsg.SUCCESS, feedbackList);
     }
 }

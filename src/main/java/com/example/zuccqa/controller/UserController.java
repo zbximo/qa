@@ -7,44 +7,35 @@ package com.example.zuccqa.controller;
  * @description:
  */
 
-import com.example.zuccqa.entity.Model;
 import com.example.zuccqa.entity.User;
-import com.example.zuccqa.repository.UserRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
-import org.bson.types.ObjectId;
-import org.springframework.beans.BeanUtils;
+import com.example.zuccqa.service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 class UserController {
-
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
-    private UserRepository UserRepository;
+    private UserService userService;
 
     /**
      * @param userMap 用户信息
      * @return
      */
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addUser(@RequestBody User userMap) {
-        User user = new User();
-        BeanUtils.copyProperties(userMap, user);
-        System.out.println(user.getId());
-        if (user.getId() == null || user.getId().equals("")) {
-            return new ResponseData("1000000", "用户账号为空");
-        } else if (user.getPassword() == null || user.getPassword().equals("")) {
-            return new ResponseData("100000", "密码为空");
-        }
-        UserRepository.save(user);
-        return new ResponseData(ExceptionMsg.SUCCESS, user);
+        String id = userService.addUser(userMap);
+        logger.warn("create student id = {} ", id);
+        return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
     /**
@@ -53,12 +44,8 @@ class UserController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateUser(@RequestBody User userMap) {
-        User user = new User();
-        BeanUtils.copyProperties(userMap, user);
-        if ( user.getId() == null|| user.getId().equals("")) {
-            return new ResponseData("100000", "用户ID为空");
-        }
-        UserRepository.save(userMap);
+        String id = userService.updateUser(userMap);
+        logger.warn("update student id = {} ", id);
         return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
 
@@ -68,10 +55,8 @@ class UserController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteUser(@RequestParam("id") String id) {
-        if (id.equals("")) {
-            return new ResponseData("100000", "用户ID为空");
-        }
-        UserRepository.deleteById(id);
+        String sid = userService.deleteUser(id);
+        logger.warn("delete student id = {} ", sid);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
@@ -81,14 +66,9 @@ class UserController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        if (id.equals("")) {
-            return new ResponseData("100000", "用户ID为空");
-        }
-        User user = UserRepository.findById(id);
-        if (user == null) {
-            return new ResponseData(ExceptionMsg.FAILED, user);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        User user = userService.findById(id);
+        logger.warn("query student id = {}", id);
+        return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
 
     /**
@@ -97,14 +77,9 @@ class UserController {
      */
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
     public ResponseData findByName(@RequestParam("name") String name) {
-        if (name.equals("")) {
-            return new ResponseData("100000", "姓名为空");
-        }
-        List<User> userList = UserRepository.findByName(name);
-        if (userList.size() > 0) {
-            return new ResponseData(ExceptionMsg.SUCCESS, userList);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        List<User> userList = userService.findByName(name);
+        logger.warn("query students name = {}", name);
+        return new ResponseData(ExceptionMsg.SUCCESS, userList);
     }
 
     /**
@@ -112,7 +87,8 @@ class UserController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<User> list = UserRepository.findAll();
+        List<User> list = userService.getAll();
+        logger.warn("query all students");
         return new ResponseData(ExceptionMsg.SUCCESS, list);
     }
 
@@ -124,17 +100,10 @@ class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Response login(@RequestParam("id") String id, @RequestParam("password") String password) {
-        if (id.equals("") || password.equals("")) {
-            return new ResponseData("100000", "用户名密码不能为空");
-        }
-        User user = UserRepository.findById(id);
-        if (user == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
-        } else if (!user.getPassword().equals(password)) {
-            return new ResponseData(ExceptionMsg.FAILED, "密码错误");
-        } else {
-            return new ResponseData(ExceptionMsg.SUCCESS, user);
-        }
+
+        String userId = userService.login(id, password);
+        logger.info("student {} login", userId);
+        return new ResponseData(ExceptionMsg.SUCCESS, userId);
     }
 
     /**
@@ -146,20 +115,10 @@ class UserController {
     @RequestMapping(value = "/modifyPwd", method = RequestMethod.POST)
     public Response modifyPwd(@RequestParam("id") String id, @RequestParam("oldPwd") String oldPwd,
                               @RequestParam("newPwd") String newPwd) {
-        if (id.equals("")) {
-            return new ResponseData("100000", "用户ID不能为空");
-        }
-        User user = UserRepository.findById(id);
 
-        if (user == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
-        } else if (!oldPwd.equals(user.getPassword())) {
-            return new ResponseData(ExceptionMsg.FAILED, "旧密码错误");
-        } else {
-            user.setPassword(newPwd);
-            UserRepository.save(user);
-            return new ResponseData(ExceptionMsg.SUCCESS, user);
-        }
+        String userId = userService.modifyPwd(id, oldPwd, newPwd);
+        logger.warn("student {} modified password", userId);
+        return new ResponseData(ExceptionMsg.SUCCESS, userId);
     }
 }
 

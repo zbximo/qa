@@ -14,6 +14,8 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends MongoRepository<Course, Integer> {
     Course findByCourseId(String courseId);
+
     List<Course> findByCourseName(String courseName);
-    Course deleteByCourseId(String courseId);
+
+    void deleteByCourseId(String courseId);
 }

@@ -1,15 +1,12 @@
 package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.AnswerSheet;
-import com.example.zuccqa.repository.AnswerSheetRepository;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
-import jdk.nashorn.internal.runtime.options.LoggingOption;
-import org.bson.types.ObjectId;
+import com.example.zuccqa.service.AnswerSheetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/answer")
 public class AnswerSheetController {
+    private final Logger logger = LoggerFactory.getLogger(AnswerSheetController.class);
     @Autowired
-    private AnswerSheetRepository answerSheetRepository;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private AnswerSheetService answerSheetService;
+
+
     /**
      * @param answerSheetMap 问卷填写表
      * @return
@@ -33,25 +32,11 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
-        if (answerSheetMap.getStudentId().equals("")){
-            return new ResponseData("100000","缺少用户ID");
-        }
-        if (answerSheetMap.getFeedbackId().equals("")){
-            return new ResponseData("100000","缺少问卷ID");
-        }
-        AnswerSheet answerSheet = answerSheetRepository.UserIdAndFeedbackId(answerSheetMap.getStudentId(),
-                answerSheetMap.getFeedbackId());
-        if (answerSheet == null) {
-            answerSheet = new AnswerSheet();
-            ObjectId id = new ObjectId();
-            answerSheetMap.setAnswerSheetId(id.toString());
-            BeanUtils.copyProperties(answerSheetMap, answerSheet);
-            answerSheetRepository.save(answerSheet);
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
-        } else {
-            answerSheetRepository.save(answerSheetMap);
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
-        }
+
+        String answerSheetId = answerSheetService.addAnswerSheet(answerSheetMap);
+        logger.warn("create answerSheets answerSheetId = {}", answerSheetId);
+
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
 
     }
 
@@ -61,10 +46,10 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteAnswerSheet(@RequestParam("id") String id) {
-        if (id.equals("")){
-            return new ResponseData("100000","缺少答卷ID");
-        }
-        answerSheetRepository.deleteByAnswerSheetId(id);
+
+        String answerSheetId = answerSheetService.deleteAnswerSheet(id);
+        logger.warn("delete answerSheets answerSheetId = {}", answerSheetId);
+
         return new Response(ExceptionMsg.SUCCESS);
     }
 
@@ -74,10 +59,9 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
-        if (answerSheetMap.getAnswerSheetId().equals("")){
-            return new ResponseData("100000","缺少答卷ID");
-        }
-        answerSheetRepository.save(answerSheetMap);
+        String answerSheetId = answerSheetService.updateAnswerSheet(answerSheetMap);
+        logger.warn("update answerSheets answerSheetId = {}", answerSheetId);
+
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
     }
 
@@ -87,14 +71,12 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        if (id.equals("")){
-            return new ResponseData("100000","缺少答卷ID");
-        }
-        AnswerSheet answerSheet = answerSheetRepository.findByAnswerSheetId(id);
-        if (answerSheet != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty);
+
+        AnswerSheet answerSheet = answerSheetService.findById(id);
+        logger.warn("query answerSheets answerSheetId = {}", id);
+
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
+
     }
 
     /**
@@ -103,14 +85,11 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/findByUserId", method = RequestMethod.GET)
     public ResponseData findByUserId(@RequestParam("userId") String userId) {
-        if (userId.equals("")){
-            return new ResponseData("100000","缺少用户ID");
-        }
-        List<AnswerSheet> answerSheetList = answerSheetRepository.UserId(userId);
-        if (answerSheetList.size() > 0) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty);
+
+        List<AnswerSheet> answerSheetList = answerSheetService.findByUserId(userId);
+        logger.warn("query answerSheets userId = {}", userId);
+
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 
     /**
@@ -119,14 +98,10 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/findByFeedbackId", method = RequestMethod.GET)
     public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
-        if (feedbackId.equals("")){
-            return new ResponseData("100000","缺少问卷ID");
-        }
-        List<AnswerSheet> answerSheetList = answerSheetRepository.FeedbackId(feedbackId);
-        if (answerSheetList.size() > 0) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty);
+
+        List<AnswerSheet> answerSheetList = answerSheetService.findByFeedbackId(feedbackId);
+        logger.warn("query answerSheets feedbackId = {}", feedbackId);
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 
     /**
@@ -135,19 +110,12 @@ public class AnswerSheetController {
      * @return
      */
     @RequestMapping(value = "/findByUserAndFeedback", method = RequestMethod.GET)
-    public ResponseData findByUserIdAndFeedbackId(@RequestParam("userId") String userId,
-                                                  @RequestParam("feedbackId") String feedbackId) {
-        if (userId.equals("")){
-            return new ResponseData("100000","缺少用户ID");
-        }
-        if (feedbackId.equals("")){
-            return new ResponseData("100000","缺少问卷ID");
-        }
-        AnswerSheet answerSheet = answerSheetRepository.UserIdAndFeedbackId(userId, feedbackId);
-        if (answerSheet != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty);
+    public ResponseData getOneAnswerSheet(@RequestParam("userId") String userId,
+                                          @RequestParam("feedbackId") String feedbackId) {
+
+        AnswerSheet answerSheet = answerSheetService.findByUserIdAndFeedbackId(userId, feedbackId);
+        logger.warn("query answerSheet userId = {},feedbackId = {}", userId, feedbackId);
+        return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
     }
 
     /**
@@ -155,7 +123,8 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<AnswerSheet> answerSheetList = answerSheetRepository.findAll();
+        List<AnswerSheet> answerSheetList = answerSheetService.getAll();
+        logger.warn("query answerSheets");
         return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
     }
 

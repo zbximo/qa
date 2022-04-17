@@ -1,12 +1,13 @@
 package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.Course;
-import com.example.zuccqa.repository.CourseRepository;
+
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
-import org.springframework.beans.BeanUtils;
-import org.bson.types.ObjectId;
+import com.example.zuccqa.service.CourseService;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/course")
 public class CourseController {
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
 
     /**
      * @param courseMap 课程信息
@@ -29,15 +31,10 @@ public class CourseController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addCourse(@RequestBody Course courseMap) {
-        if (courseMap == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "");
-        }
-        ObjectId id = new ObjectId();
-        courseMap.setCourseId(id.toString());
-        Course c = new Course();
-        BeanUtils.copyProperties(courseMap, c);
-        courseRepository.save(c);
-        return new ResponseData(ExceptionMsg.SUCCESS, c);
+
+        String id = courseService.addCourse(courseMap);
+        logger.warn("create course id = {}", id);
+        return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
     /**
@@ -46,7 +43,8 @@ public class CourseController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteCourse(@RequestParam("id") String id) {
-        courseRepository.deleteByCourseId(id);
+        String courseId = courseService.deleteCourse(id);
+        logger.warn("delete course id = {}", courseId);
         return new Response(ExceptionMsg.SUCCESS);
     }
 
@@ -56,8 +54,10 @@ public class CourseController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateCourse(@RequestBody Course courseMap) {
-        courseRepository.save(courseMap);
-        return new ResponseData(ExceptionMsg.SUCCESS, courseMap);
+        String id = courseService.updateCourse(courseMap);
+        logger.warn("update course id = {}", id);
+
+        return new ResponseData(ExceptionMsg.SUCCESS, id);
     }
 
     /**
@@ -66,11 +66,9 @@ public class CourseController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
-        Course course = courseRepository.findByCourseId(id);
-        if (course != null) {
-            return new ResponseData(ExceptionMsg.SUCCESS, course);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        Course course = courseService.findById(id);
+        logger.warn("query course id = {}", id);
+        return new ResponseData(ExceptionMsg.SUCCESS, course);
     }
 
     /**
@@ -79,11 +77,9 @@ public class CourseController {
      */
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
     public ResponseData findByName(@RequestParam("name") String name) {
-        List<Course> courseList = courseRepository.findByCourseName(name);
-        if (courseList.size() > 0) {
-            return new ResponseData(ExceptionMsg.SUCCESS, courseList);
-        }
-        return new ResponseData(ExceptionMsg.QueryEmpty, "");
+        List<Course> courseList = courseService.findByName(name);
+        logger.warn("query courses name = {}", name);
+        return new ResponseData(ExceptionMsg.SUCCESS, courseList);
     }
 
     /**
@@ -91,7 +87,8 @@ public class CourseController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<Course> courseList = courseRepository.findAll();
+        List<Course> courseList = courseService.getAll();
+        logger.warn("query all courses");
         return new ResponseData(ExceptionMsg.SUCCESS, courseList);
     }
 
