@@ -32,7 +32,10 @@ public class UserServiceImpl implements UserService {
         System.out.println(user.getId());
         if (user.getId() == null || user.getId().equals("")) {
             throw new BusinessException(Constant.ParamError, "用户账号为空");
-        } else if (user.getPassword() == null || user.getPassword().equals("")) {
+        } else if (userRepository.findById(userMap.getId())!=null){
+            throw new BusinessException(Constant.ParamError, "用户名已存在");
+        }
+        else if (user.getPassword() == null || user.getPassword().equals("")) {
             throw new BusinessException(Constant.ParamError, "密码为空");
         }
         userRepository.save(user);
