@@ -35,15 +35,14 @@ class UserController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addUser(@RequestBody User userMap) {
-        if (userMap == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "");
-        } else if (userMap.getId().equals("") || userMap.getId() == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "用户账号为空");
-        } else if (userMap.getPassword().equals("") || userMap.getPassword() == null) {
-            return new ResponseData(ExceptionMsg.FAILED, "密码为空");
-        }
         User user = new User();
         BeanUtils.copyProperties(userMap, user);
+        System.out.println(user.getId());
+        if (user.getId() == null || user.getId().equals("")) {
+            return new ResponseData("1000000", "用户账号为空");
+        } else if (user.getPassword() == null || user.getPassword().equals("")) {
+            return new ResponseData("100000", "密码为空");
+        }
         UserRepository.save(user);
         return new ResponseData(ExceptionMsg.SUCCESS, user);
     }
@@ -54,6 +53,11 @@ class UserController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateUser(@RequestBody User userMap) {
+        User user = new User();
+        BeanUtils.copyProperties(userMap, user);
+        if ( user.getId() == null|| user.getId().equals("")) {
+            return new ResponseData("100000", "用户ID为空");
+        }
         UserRepository.save(userMap);
         return new ResponseData(ExceptionMsg.SUCCESS, userMap);
     }
@@ -64,6 +68,9 @@ class UserController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Response deleteUser(@RequestParam("id") String id) {
+        if (id.equals("")) {
+            return new ResponseData("100000", "用户ID为空");
+        }
         UserRepository.deleteById(id);
         return new Response(ExceptionMsg.SUCCESS);
     }
@@ -74,11 +81,14 @@ class UserController {
      */
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public ResponseData findById(@RequestParam("id") String id) {
+        if (id.equals("")) {
+            return new ResponseData("100000", "用户ID为空");
+        }
         User user = UserRepository.findById(id);
         if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, user);
         }
-        return new ResponseData(ExceptionMsg.SUCCESS, user);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
@@ -87,11 +97,14 @@ class UserController {
      */
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
     public ResponseData findByName(@RequestParam("name") String name) {
+        if (name.equals("")) {
+            return new ResponseData("100000", "姓名为空");
+        }
         List<User> userList = UserRepository.findByName(name);
         if (userList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, userList);
         }
-        return new ResponseData(ExceptionMsg.FAILED, userList);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
@@ -112,13 +125,13 @@ class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Response login(@RequestParam("id") String id, @RequestParam("password") String password) {
         if (id.equals("") || password.equals("")) {
-            return new ResponseData(ExceptionMsg.FAILED, "用户名密码不能为空");
+            return new ResponseData("100000", "用户名密码不能为空");
         }
         User user = UserRepository.findById(id);
         if (user == null) {
             return new ResponseData(ExceptionMsg.FAILED, "用户不存在");
         } else if (!user.getPassword().equals(password)) {
-            return new ResponseData(ExceptionMsg.SUCCESS, "密码错误");
+            return new ResponseData(ExceptionMsg.FAILED, "密码错误");
         } else {
             return new ResponseData(ExceptionMsg.SUCCESS, user);
         }
@@ -133,6 +146,9 @@ class UserController {
     @RequestMapping(value = "/modifyPwd", method = RequestMethod.POST)
     public Response modifyPwd(@RequestParam("id") String id, @RequestParam("oldPwd") String oldPwd,
                               @RequestParam("newPwd") String newPwd) {
+        if (id.equals("")) {
+            return new ResponseData("100000", "用户ID不能为空");
+        }
         User user = UserRepository.findById(id);
 
         if (user == null) {

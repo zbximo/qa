@@ -9,6 +9,7 @@ package com.example.zuccqa.result;
 public enum ExceptionMsg {
     SUCCESS("200", "操作成功"),
     FAILED("99999","操作失败"),
+    QueryEmpty("000000","查询结果为空"),
     ParamError("000001", "参数错误！"),
     FileEmpty("000400","上传文件为空"),
     LimitPictureSize("000401","图片大小必须小于2M"),

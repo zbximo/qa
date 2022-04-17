@@ -70,8 +70,7 @@ public class CourseController {
         if (course != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, course);
         }
-        else
-            return new ResponseData(ExceptionMsg.FAILED, course);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
@@ -84,7 +83,7 @@ public class CourseController {
         if (courseList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, courseList);
         }
-        return new ResponseData(ExceptionMsg.FAILED, courseList);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**

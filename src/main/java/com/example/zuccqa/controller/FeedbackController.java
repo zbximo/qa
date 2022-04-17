@@ -71,7 +71,7 @@ public class FeedbackController {
         if (feedback != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, feedback);
         }
-        return new ResponseData(ExceptionMsg.FAILED, feedback);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
@@ -82,10 +82,10 @@ public class FeedbackController {
     public ResponseData findByCourseId(@RequestParam("courseId") String courseId) {
         System.out.println(courseId);
         List<Feedback> feedback = feedbackRepository.find(courseId);
-        if (feedback != null) {
+        if (feedback.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, feedback);
         }
-        return new ResponseData(ExceptionMsg.FAILED, feedback);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**

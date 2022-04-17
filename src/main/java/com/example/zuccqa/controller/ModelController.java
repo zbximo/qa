@@ -31,13 +31,14 @@ public class ModelController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addModel(@RequestBody Model modelMap) {
-        if (modelMap == null) {
+        Model model = new Model();
+        BeanUtils.copyProperties(modelMap, model);
+        if (model == null) {
             return new ResponseData(ExceptionMsg.FAILED, "");
         }
         ObjectId id = new ObjectId();
         modelMap.setModelID(id.toString());
-        Model model = new Model();
-        BeanUtils.copyProperties(modelMap, model);
+
         modelRepository.save(model);
         return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
@@ -59,6 +60,9 @@ public class ModelController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseData updateModel(@RequestBody Model modelMap) {
+        if (modelMap.getModelID().equals("") || modelMap.getModelID()==null){
+            return new ResponseData("100000","没有模板ID", "");
+        }
         modelRepository.save(modelMap);
         return new ResponseData(ExceptionMsg.SUCCESS, modelMap);
     }
@@ -73,7 +77,7 @@ public class ModelController {
         if (model != null) {
             return new ResponseData(ExceptionMsg.SUCCESS, model);
         }
-        return new ResponseData(ExceptionMsg.FAILED, model);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
@@ -86,7 +90,7 @@ public class ModelController {
         if (modelList.size() > 0) {
             return new ResponseData(ExceptionMsg.SUCCESS, modelList);
         }
-        return new ResponseData(ExceptionMsg.FAILED, modelList);
+        return new ResponseData(ExceptionMsg.QueryEmpty, "");
     }
 
     /**
