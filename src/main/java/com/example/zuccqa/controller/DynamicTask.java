@@ -56,6 +56,7 @@ public class DynamicTask {
                         if (!courseIdList.contains(key)){
                             System.out.println("cancle: "+key);
                             value.cancel(true);
+                            map.remove(key);
                         }
                     }
             );

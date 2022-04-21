@@ -118,7 +118,8 @@ public class FeedbackServiceImpl implements FeedbackService {
             map.forEach((key1, value) -> {
                 if ((Integer) value == 0) {
                     // 发送消息
-                    System.out.println("post: " + "feedbackId:" + key + "studentId:" + key1);
+
+                    System.out.println("post: " + "feedbackId:" + key + "  studentId:" + key1);
                 }
 
             });
