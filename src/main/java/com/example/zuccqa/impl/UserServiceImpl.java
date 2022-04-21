@@ -1,10 +1,13 @@
 package com.example.zuccqa.impl;
 
+import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.User;
 import com.example.zuccqa.exception.BusinessException;
+import com.example.zuccqa.repository.CourseRepository;
 import com.example.zuccqa.repository.UserRepository;
 import com.example.zuccqa.service.UserService;
 import com.example.zuccqa.utils.Constant;
+import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private CourseRepository courseRepository;
     /**
      * @param userMap 用户信息
      * @return
@@ -162,4 +166,15 @@ public class UserServiceImpl implements UserService {
             return user.getId();
         }
     }
+
+    /**通过学生Id找到所有课程
+     *
+     * @param studentId
+     * @return
+     */
+    @Override
+    public List<Course> findByStudentIdListContains(String studentId) {
+        return courseRepository.findByStudentIdListContains(studentId);
+    }
+
 }

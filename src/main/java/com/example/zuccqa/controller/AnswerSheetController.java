@@ -36,7 +36,7 @@ public class AnswerSheetController {
         String answerSheetId = answerSheetService.addAnswerSheet(answerSheetMap);
         logger.warn("create answerSheet answerSheetId: {}", answerSheetId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
+        return new ResponseData(ExceptionMsg.CREATE_SUCCESS, answerSheetId);
 
     }
 
@@ -50,7 +50,7 @@ public class AnswerSheetController {
         String answerSheetId = answerSheetService.deleteAnswerSheet(id);
         logger.warn("delete answerSheets answerSheetId: {}", answerSheetId);
 
-        return new Response(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.DELETE_SUCCESS);
     }
 
     /**
@@ -62,7 +62,7 @@ public class AnswerSheetController {
         String answerSheetId = answerSheetService.updateAnswerSheet(answerSheetMap);
         logger.warn("update answerSheets answerSheetId: {}", answerSheetId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetMap);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, answerSheetMap);
     }
 
     /**
@@ -77,7 +77,7 @@ public class AnswerSheetController {
         AnswerSheet answerSheet = answerSheetService.findById(id);
         logger.warn("query answerSheets answerSheetId: {}", id);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheet);
 
     }
 
@@ -93,7 +93,7 @@ public class AnswerSheetController {
         List<AnswerSheet> answerSheetList = answerSheetService.findByUserId(userId);
         logger.warn("query answerSheets userId: {}", userId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
     }
 
     /**
@@ -107,7 +107,7 @@ public class AnswerSheetController {
 
         List<AnswerSheet> answerSheetList = answerSheetService.findByFeedbackId(feedbackId);
         logger.warn("query answerSheets feedbackId: {}", feedbackId);
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
     }
 
     /**
@@ -123,7 +123,7 @@ public class AnswerSheetController {
 
         AnswerSheet answerSheet = answerSheetService.findByUserIdAndFeedbackId(userId, feedbackId);
         logger.warn("query answerSheet userId: {},feedbackId: {}", userId, feedbackId);
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheet);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheet);
     }
 
     /**
@@ -135,7 +135,7 @@ public class AnswerSheetController {
     public ResponseData getAll() {
         List<AnswerSheet> answerSheetList = answerSheetService.getAll();
         logger.warn("query answerSheets");
-        return new ResponseData(ExceptionMsg.SUCCESS, answerSheetList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
     }
 
 }

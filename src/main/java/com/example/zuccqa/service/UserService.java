@@ -1,5 +1,6 @@
 package com.example.zuccqa.service;
 
+import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.User;
 import com.example.zuccqa.result.ResponseData;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,7 @@ public interface UserService {
 
     String modifyPwd(String id, String oldPwd,
                      String newPwd);
+
+    List<Course> findByStudentIdListContains(String studentId);
 
 }

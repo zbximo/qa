@@ -1,9 +1,11 @@
 package com.example.zuccqa.controller;
 
+import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.Feedback;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
+import com.example.zuccqa.service.CourseService;
 import com.example.zuccqa.service.FeedbackService;
 
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ public class FeedbackController {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(FeedbackController.class);
     @Autowired
     private FeedbackService feedbackService;
+    @Autowired
+    private DynamicTask dynamicTask;
 
     /**
      * @param feedbackMap 问卷信息
@@ -31,8 +35,11 @@ public class FeedbackController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseData addFeedback(@RequestBody Feedback feedbackMap) {
         String feedbackId = feedbackService.addFeedback(feedbackMap);
+
+        feedbackService.addFinishCache(feedbackId,feedbackMap.getFeedbackCourseId());
         logger.warn("create feedback id: {}", feedbackId);
-        return new ResponseData(ExceptionMsg.SUCCESS, feedbackId);
+        dynamicTask.startCron(feedbackId);
+        return new ResponseData(ExceptionMsg.CREATE_SUCCESS, feedbackId);
     }
 
     /**
@@ -44,7 +51,7 @@ public class FeedbackController {
         String feedbackId = feedbackService.deleteFeedback(id);
         logger.warn("delete feedback id: {}", feedbackId);
 
-        return new Response(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.DELETE_SUCCESS);
     }
 
 
@@ -57,7 +64,7 @@ public class FeedbackController {
         String feedbackId = feedbackService.updateFeedback(feedbackMap);
         logger.warn("update feedback id: {}", feedbackId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, feedbackMap);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, feedbackMap);
     }
 
     /**
@@ -71,7 +78,7 @@ public class FeedbackController {
         Feedback feedback = feedbackService.findById(id);
         logger.warn("query feedback id: {}", feedback.getFeedbackId());
 
-        return new ResponseData(ExceptionMsg.SUCCESS, feedback);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, feedback);
 
     }
 
@@ -86,7 +93,7 @@ public class FeedbackController {
         List<Feedback> feedback = feedbackService.findByCourseId(courseId);
         logger.warn("query feedbacks courseId: {}", courseId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, feedback);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, feedback);
     }
 
     /**
@@ -97,6 +104,6 @@ public class FeedbackController {
         List<Feedback> feedbackList = feedbackService.getAll();
         logger.warn("query all feedbacks");
 
-        return new ResponseData(ExceptionMsg.SUCCESS, feedbackList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, feedbackList);
     }
 }

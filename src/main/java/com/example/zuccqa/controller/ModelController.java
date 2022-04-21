@@ -34,7 +34,7 @@ public class ModelController {
 
         String modelId = modelService.addModel(modelMap);
         logger.warn("create model id: {}", modelId);
-        return new ResponseData(ExceptionMsg.SUCCESS, modelId);
+        return new ResponseData(ExceptionMsg.CREATE_SUCCESS, modelId);
     }
 
     /**
@@ -46,7 +46,7 @@ public class ModelController {
         String modelId = modelService.deleteModel(id);
         logger.warn("delete model id: {}", modelId);
 
-        return new Response(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.DELETE_SUCCESS);
     }
 
 
@@ -59,7 +59,7 @@ public class ModelController {
         String modelId = modelService.updateModel(modelMap);
         logger.warn("update model id: {}", modelId);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, modelMap);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, modelMap);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ModelController {
         Model model = modelService.findById(id);
         logger.warn("query model id: {}", id);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, model);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, model);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ModelController {
         List<Model> modelList = modelService.findByName(name);
         logger.warn("query model id: {}", name);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, modelList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, modelList);
     }
 
     /**
@@ -98,6 +98,6 @@ public class ModelController {
         List<Model> modelList = modelService.getAll();
         logger.warn("query all models");
 
-        return new ResponseData(ExceptionMsg.SUCCESS, modelList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, modelList);
     }
 }

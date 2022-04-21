@@ -7,6 +7,10 @@ package com.example.zuccqa.result;
  * @description:
  */
 public enum ExceptionMsg {
+    CREATE_SUCCESS("200", "添加成功"),
+    UPDATE_SUCCESS("200", "更新成功"),
+    DELETE_SUCCESS("200", "删除成功"),
+    QUERY_SUCCESS("200", "查询成功"),
     SUCCESS("200", "操作成功"),
     FAILED("99999","操作失败"),
     QUERY_EMPTY("000000","查询结果为空"),

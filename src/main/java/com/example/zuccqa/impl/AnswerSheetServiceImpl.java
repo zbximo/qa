@@ -8,6 +8,7 @@ import com.example.zuccqa.repository.AnswerSheetRepository;
 import com.example.zuccqa.repository.FeedbackRepository;
 import com.example.zuccqa.repository.UserRepository;
 import com.example.zuccqa.service.AnswerSheetService;
+import com.example.zuccqa.service.FeedbackService;
 import com.example.zuccqa.utils.Constant;
 import org.bson.types.ObjectId;
 
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class AnswerSheetServiceImpl implements AnswerSheetService {
     private UserRepository userRepository;
     @Autowired
     private FeedbackRepository feedbackRepository;
+    @Autowired
+    private FeedbackService feedbackService;
 
     /**
      * @param answerSheetMap 问卷填写表
@@ -47,10 +51,27 @@ public class AnswerSheetServiceImpl implements AnswerSheetService {
         if (answerSheet.getFeedbackId() == null || answerSheet.getFeedbackId().equals("")) {
             throw new BusinessException(Constant.PARAM_ERROR, "缺少问卷ID");
         }
+        Date date = new Date(System.currentTimeMillis());
+        if (date.after(feedbackRepository.findByFeedbackId(answerSheet.getFeedbackId()).getEndTime())) {
+            throw new BusinessException(Constant.PARAM_ERROR, "问卷已关闭");
+        }
         checkAnswer(answerSheet);
+        // 查看是否已经提交过答卷
+        AnswerSheet answerSheet1 = answerSheetRepository.UserIdAndFeedbackId(answerSheet.getStudentId(), answerSheet.getFeedbackId());
+        // 更新cache
+        feedbackService.FinishedCache(answerSheet.getFeedbackId(),
+                feedbackService.findById(answerSheet.getFeedbackId()).getFeedbackCourseId(), answerSheet.getStudentId());
+        if (answerSheet1 != null) {
+            answerSheet.setAnswerSheetId(answerSheet1.getAnswerSheetId());
+            return updateAnswerSheet(answerSheet);
+        }
+
         ObjectId id = new ObjectId();
         answerSheet.setAnswerSheetId(id.toString());
+
+        answerSheet.setSubmitDate(date);
         answerSheetRepository.save(answerSheet);
+
         return answerSheet.getAnswerSheetId();
 
     }

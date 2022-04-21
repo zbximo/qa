@@ -35,6 +35,8 @@ public class CourseServiceImpl implements CourseService {
             throw new BusinessException(Constant.PARAM_ERROR, "缺少课程名");
         }
         ObjectId id = new ObjectId();
+        System.out.println(id.toHexString());
+
         c.setCourseId(id.toString());
         c.setIsClose(Constant.COURSE_OPEN);
         courseRepository.save(c);

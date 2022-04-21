@@ -7,6 +7,7 @@ package com.example.zuccqa.controller;
  * @description:
  */
 
+import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.User;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
@@ -35,7 +36,7 @@ class UserController {
     public ResponseData addUser(@RequestBody User userMap) {
         String id = userService.addUser(userMap);
         logger.warn("create student id: {} ", id);
-        return new ResponseData(ExceptionMsg.SUCCESS, id);
+        return new ResponseData(ExceptionMsg.CREATE_SUCCESS, id);
     }
 
     /**
@@ -46,7 +47,7 @@ class UserController {
     public ResponseData updateUser(@RequestBody User userMap) {
         String id = userService.updateUser(userMap);
         logger.warn("update student id: {} ", id);
-        return new ResponseData(ExceptionMsg.SUCCESS, userMap);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, userMap);
     }
 
     /**
@@ -57,7 +58,7 @@ class UserController {
     public Response deleteUser(@RequestParam("id") String id) {
         String sid = userService.deleteUser(id);
         logger.warn("delete student id: {} ", sid);
-        return new Response(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.DELETE_SUCCESS);
     }
 
     /**
@@ -70,7 +71,7 @@ class UserController {
     public ResponseData viewUserById(@RequestParam("id") String id) {
         User user = userService.findById(id);
         logger.warn("query student id: {}", id);
-        return new ResponseData(ExceptionMsg.SUCCESS, user);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, user);
     }
 
     /**
@@ -83,7 +84,7 @@ class UserController {
     public ResponseData viewUserByName(@RequestParam("name") String name) {
         List<User> userList = userService.findByName(name);
         logger.warn("query students name: {}", name);
-        return new ResponseData(ExceptionMsg.SUCCESS, userList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, userList);
     }
 
     /**
@@ -93,7 +94,7 @@ class UserController {
     public ResponseData getAll() {
         List<User> list = userService.getAll();
         logger.warn("query all students");
-        return new ResponseData(ExceptionMsg.SUCCESS, list);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, list);
     }
 
 
@@ -126,5 +127,21 @@ class UserController {
         logger.warn("student id: {} modified password", userId);
         return new ResponseData(ExceptionMsg.SUCCESS, userId);
     }
+
+    /**
+     * 通过用户Id获取该用户所有课程
+     *
+     * @param id 用户Id
+     * @return
+     */
+    @RequestMapping(value = "/getUserClass", method = RequestMethod.GET)
+    public Response getUserClass(@RequestParam("id") String id) {
+
+        List<Course> courseList = userService.findByStudentIdListContains(id);
+        logger.warn("query user's courses");
+        return new ResponseData(ExceptionMsg.SUCCESS, courseList);
+    }
+
+
 }
 

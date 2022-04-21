@@ -34,7 +34,7 @@ public class CourseController {
 
         String id = courseService.addCourse(courseMap);
         logger.warn("create course id: {}", id);
-        return new ResponseData(ExceptionMsg.SUCCESS, id);
+        return new ResponseData(ExceptionMsg.CREATE_SUCCESS, id);
     }
 
     /**
@@ -45,7 +45,7 @@ public class CourseController {
     public Response deleteCourse(@RequestParam("id") String id) {
         String courseId = courseService.deleteCourse(id);
         logger.warn("delete course id: {}", courseId);
-        return new Response(ExceptionMsg.SUCCESS);
+        return new Response(ExceptionMsg.DELETE_SUCCESS);
     }
 
     /**
@@ -57,7 +57,7 @@ public class CourseController {
         String id = courseService.updateCourse(courseMap);
         logger.warn("update course id: {}", id);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, id);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, id);
     }
 
     /**
@@ -70,7 +70,7 @@ public class CourseController {
     public ResponseData findById(@RequestParam("id") String id) {
         Course course = courseService.findById(id);
         logger.warn("query course id: {}", id);
-        return new ResponseData(ExceptionMsg.SUCCESS, course);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, course);
     }
 
     /**
@@ -83,7 +83,7 @@ public class CourseController {
     public ResponseData viewCourseByName(@RequestParam("name") String name) {
         List<Course> courseList = courseService.findByName(name);
         logger.warn("query courses name: {}", name);
-        return new ResponseData(ExceptionMsg.SUCCESS, courseList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, courseList);
     }
 
     /**
@@ -96,7 +96,7 @@ public class CourseController {
     public ResponseData closeCourseById(@RequestParam("id") String id) {
         String courseId = courseService.closeCourse(id);
         logger.warn("close courses id: {}", courseId);
-        return new ResponseData(ExceptionMsg.SUCCESS, courseId);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, courseId);
     }
 
     /**
@@ -109,7 +109,7 @@ public class CourseController {
     public ResponseData openCourseById(@RequestParam("id") String id) {
         String courseId = courseService.openCourse(id);
         logger.warn("open courses id: {}", courseId);
-        return new ResponseData(ExceptionMsg.SUCCESS, courseId);
+        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, courseId);
     }
 
     /**
@@ -119,7 +119,7 @@ public class CourseController {
     public ResponseData getAll() {
         List<Course> courseList = courseService.getAll();
         logger.warn("query all courses");
-        return new ResponseData(ExceptionMsg.SUCCESS, courseList);
+        return new ResponseData(ExceptionMsg.QUERY_SUCCESS, courseList);
     }
 
 
