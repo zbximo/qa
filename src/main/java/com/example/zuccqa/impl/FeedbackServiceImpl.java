@@ -113,18 +113,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         //key("*") 获取所有键
         Set<String> keys = redisTemplate.keys("*");
         keys.forEach(
-                s->{
-                    courseIdList.add(StringUtils.substringBefore(s,"finishedTable"));
+                s -> {
+                    courseIdList.add(StringUtils.substringBefore(s, "finishedTable"));
                 }
         );
-        System.out.println("cacheSize: "+String.valueOf(keys.size()));
-        if (!courseIdList.contains(fbId)){
-            System.out.println("cancle: "+fbId);
+        System.out.println("cacheSize: " + String.valueOf(keys.size()));
+        if (!courseIdList.contains(fbId)) {
+            System.out.println("cancle: " + fbId);
             DynamicTask.map.get(fbId).cancel(true);
             DynamicTask.map.remove(fbId);
-        }
-        else {
-            Map<Object, Object> map = redisTemplate.opsForHash().entries(fbId+"finishedTable");
+        } else {
+            Map<Object, Object> map = redisTemplate.opsForHash().entries(fbId + "finishedTable");
             map.forEach((key1, isFin) -> {
 
                 if ((Integer) isFin == 0) {

@@ -41,7 +41,6 @@ public class DynamicTask {
     private ScheduledFuture future;
     public static ConcurrentHashMap<String, ScheduledFuture> map = new ConcurrentHashMap<String, ScheduledFuture>();
 
-    @RequestMapping(value = "/ttt", method = RequestMethod.DELETE)
     public ScheduledFuture startCron(@RequestParam("id") String feedbackId) {
         future = threadPoolTaskScheduler.schedule(new PostTips(feedbackId), new CronTrigger(System.currentTimeMillis() / 1000 % 60 + "/10 * * * * *"));
 
@@ -50,7 +49,7 @@ public class DynamicTask {
         System.out.println("DynamicTask.startCron() feedbackId: " + feedbackId + new Date(System.currentTimeMillis()));
         return future;
     }
-    @RequestMapping(value = "/ttt1", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/tese", method = RequestMethod.GET)
     public ScheduledFuture start(@RequestParam("id") String feedbackId) throws SchedulerException {
         SchedulerFactory factory = new StdSchedulerFactory();
         Scheduler scheduler = factory.getScheduler();
@@ -60,9 +59,8 @@ public class DynamicTask {
                 .withDescription(feedbackId)
                 .build();
 
-        String fbId = feedbackId;
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put("fbId",fbId);
+        jobDataMap.put("fbId",feedbackId);
 
         org.quartz.Trigger trigger = (org.quartz.Trigger) TriggerBuilder.newTrigger()
                 .withSchedule(CronScheduleBuilder.cronSchedule(System.currentTimeMillis() / 1000 % 60 + "/10 * * * * *"))
