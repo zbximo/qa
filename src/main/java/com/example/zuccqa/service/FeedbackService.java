@@ -27,6 +27,5 @@ public interface FeedbackService {
 
     Map<String, Integer> FinishedCache(String feedbackId, String courseId, String studentId);
 
-    //    public void postTips();
-    List<String> getAllCache();
+    List<String> postTips(String fbId);
 }

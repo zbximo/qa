@@ -107,25 +107,36 @@ public class FeedbackServiceImpl implements FeedbackService {
 
 
     @Override
-    public List<String> getAllCache() {
+    public List<String> postTips(String fbId) {
 
-        List<String> list = new ArrayList<>();
+        List<String> courseIdList = new ArrayList<>();
         //key("*") 获取所有键
         Set<String> keys = redisTemplate.keys("*");
+        keys.forEach(
+                s->{
+                    courseIdList.add(StringUtils.substringBefore(s,"finishedTable"));
+                }
+        );
         System.out.println("cacheSize: "+String.valueOf(keys.size()));
-        for (String key : keys) {
-            Map<Object, Object> map = redisTemplate.opsForHash().entries(key);
-            map.forEach((key1, value) -> {
-                if ((Integer) value == 0) {
-                    // 发送消息
+        if (!courseIdList.contains(fbId)){
+            System.out.println("cancle: "+fbId);
+            DynamicTask.map.get(fbId).cancel(true);
+            DynamicTask.map.remove(fbId);
+        }
+        else {
+            Map<Object, Object> map = redisTemplate.opsForHash().entries(fbId+"finishedTable");
+            map.forEach((key1, isFin) -> {
 
-                    System.out.println("post: " + "feedbackId:" + key + "  studentId:" + key1);
+                if ((Integer) isFin == 0) {
+                    // 发送消息
+                    System.out.println("postInfo: " + "feedbackId:" + fbId + "  studentId:" + key1);
                 }
 
             });
-            list.add(StringUtils.substringBefore(key,"finishedTable"));
         }
-        return list;
+        System.out.println("endPostTips");
+        System.out.println("************************");
+        return courseIdList;
     }
 
     /**
