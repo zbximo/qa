@@ -20,6 +20,9 @@ public class ZuccEchoMessage implements Serializable {
     public static final String CATEGORY_RPC= "m_rpc";
     public static final String CATEGORY_SHEET_CREATE= "sheet_create";
     public static final String CATEGORY_BLANKSHEET_CREATE= "blankSheet_create";
+    public static final String CATEGORY_FEEDBACK_CREATE = "feedback_create";
+    public static final String CATEGORY_FEEDBACK_RECTIFY = "feedback_rectify";
+    public static final String CATEGORY_BLANK_FEEDBACK_CREATE = "blank_feedback_create";
     public static final String POST_TIP= "post_tip";
     public static final String LOG_INFO= "lop_info";
     public static final String LOG_WARN= "log_warn";

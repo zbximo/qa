@@ -16,7 +16,9 @@ public class Constants {
     public static final String QUE_SIMPLE = "simple";
     public static final String QUE_WORK_QUEUE= "work-queue";
     public static final String QUE_RPC_QUEUE= "rpc-queue";
-
+    public static final String QUE_SUB_QUEUE = "subscribe-queue";
+    public static final String QUE_ROUTINE_QUEUE = "routine-queue";
+    public static final String QUE_TOPIC_QUEUE = "topic-queue";
     public static final String EX_FANOUT = "ex-fanout";
     public static final String EX_DIRECT = "ex-direct";
     public static final String EX_TOPIC = "ex-topic";

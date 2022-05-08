@@ -35,6 +35,38 @@ public class AnswerSheetController {
     @Qualifier("direct")
     @Autowired
     private DirectExchange directExchange;
+
+//    @RequestMapping(value = "/issueError", method = RequestMethod.POST)
+//    public ResponseData issueError(@RequestBody AnswerSheetDto answerSheetMap){
+//        logger.warn("deal with something.");
+//
+//        //模拟产生不同级别错误
+//        ZuccEchoMessage msg = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_ERROR);
+//        msg.appendContent("error", "Error Info");
+//        msg.appendContent("warning", "warning hanppend.");
+//        msg.appendContent("info","Info");
+//        mqService.convertAndSend(Constants.QUE_ROUTINE_QUEUE, msg);
+//
+//        ZuccEchoMessage msgFatal = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_ERROR);
+//        msgFatal.appendContent("error", "");
+//        msgFatal.appendContent("msg", "fatal error hanppend.");
+//        mqService.convertAndSend(Constants.QUE_ROUTINE_QUEUE, msgFatal);
+//        return new ResponseData(ExceptionMsg.SUCCESS);
+//    }
+//    @RequestMapping(value = "/statistics", method = RequestMethod.POST)
+//    public ResponseData statistics(@RequestBody AnswerSheetDto answerSheetMap){
+//        logger.warn("deal with statistics.");
+//
+//        //模拟产生不同级别错误
+//        ZuccEchoMessage msgclass = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_STAT);
+//        msgclass.appendContent("msg", "student class info");
+//        mqService.convertAndSend(String.valueOf(answerSheetMap.getClass()), "Class info", msgclass);
+//
+//        ZuccEchoMessage msggender = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_STAT);
+//        msggender.appendContent("msg", "student gender info");
+//        mqService.convertAndSend(answerSheetMap.getStudentId(), "student info", msggender);
+//        return new ResponseData(ExceptionMsg.SUCCESS);
+//    }
     /**
      * @param answerSheetMap 问卷填写表
      * @return

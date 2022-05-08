@@ -94,9 +94,26 @@ public class FeedbackController {
     public ResponseData updateFeedback(@RequestBody Feedback feedbackMap) {
         String feedbackId = feedbackService.updateFeedback(feedbackMap);
         logger.warn("update feedback id: {}", feedbackId);
-
+//        ZuccEchoMessage msg = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_FEEDBACK_CREATE);
+//        msg.appendContent("FeedBack Submit",feedbackMap);
+//        mqService.convertAndSend(Constants.QUE_SUB_QUEUE,msg);
+//        feedbackService.updateFeedback(feedbackMap);
         return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, feedbackMap);
     }
+//    /**
+//     * @param feedbackMap 问卷信息
+//     * @return
+//     */
+//    @RequestMapping(value = "/submit", method = RequestMethod.PUT)
+//    public ResponseData SubmitFeedback(@RequestBody Feedback feedbackMap) {
+//        String feedbackId = feedbackService.updateFeedback(feedbackMap);
+//        logger.warn("update feedback id: {}", feedbackId);
+//        ZuccEchoMessage msg = new ZuccEchoMessage("FeedBack state rectify");
+//        msg.appendContent("feedbackid",feedbackId);
+//        msg.appendContent("msg","feedback info has rectified");
+//        mqService.convertAndSend(Constants.QUE_SUB_QUEUE,msg);
+//        return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, feedbackMap);
+//    }
 
     /**
      * 通过问卷ID获取问卷信息
