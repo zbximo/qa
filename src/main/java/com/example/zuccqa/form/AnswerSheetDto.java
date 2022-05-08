@@ -1,9 +1,9 @@
 package com.example.zuccqa.form;
 
+import com.example.zuccqa.entity.Question;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -23,7 +23,9 @@ public class AnswerSheetDto implements Serializable {
 
     private String feedbackId;
 
-    private List<List<String>> answers;
+    private List<Question> questionList;
+
+    private List<List<String>> answerList;
 
     private Date submitDate;
 }

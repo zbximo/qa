@@ -4,26 +4,26 @@ import com.example.zuccqa.controller.DynamicTask;
 import com.example.zuccqa.entity.Course;
 import com.example.zuccqa.entity.Feedback;
 import com.example.zuccqa.exception.BusinessException;
+import com.example.zuccqa.mq.ZuccEchoMessage;
 import com.example.zuccqa.repository.FeedbackRepository;
 
+import com.example.zuccqa.result.ResponseData;
 import com.example.zuccqa.service.CourseService;
 import com.example.zuccqa.service.FeedbackService;
-import com.example.zuccqa.utils.Constant;
-import com.fasterxml.jackson.databind.ser.std.MapSerializer;
-import io.netty.util.internal.StringUtil;
+import com.example.zuccqa.utils.Constants;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
@@ -38,12 +38,18 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
+    private final Logger logger = LoggerFactory.getLogger(FeedbackServiceImpl.class);
     @Autowired
     private FeedbackRepository feedbackRepository;
     @Autowired
     private CourseService courseService;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Qualifier("rpc")
+    @Autowired
+    private DirectExchange rpcExchange;
+    @Autowired
+    private AmqpTemplate mqService;
 
     @Autowired(required = false)
     public void setRedisTemplate(RedisTemplate redisTemplate) {
@@ -81,7 +87,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         // 设置缓存时间: 结束时间-开始时间
         long sub = Math.abs(start.getTime() - end.getTime());
         redisTemplate.expire(feedbackId + "finishedTable", sub, TimeUnit.MILLISECONDS);
-        System.out.println(redisTemplate.opsForHash().entries(feedbackId + "finishedTable"));
         return map;
     }
 
@@ -100,8 +105,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         map.put(studentId, 1);
         redisTemplate.opsForHash().putAll(feedbackId + "finishedTable", map);
-        System.out.println(redisTemplate.opsForHash().entries(feedbackId + "finishedTable"));
-        System.out.println(map.size());
+        logger.info("add cache: key:{}", feedbackId + "finishedTable");
         return map;
     }
 
@@ -109,16 +113,16 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<String> postTips(String fbId) {
 
-        List<String> courseIdList = new ArrayList<>();
+        List<String> fbIdList = new ArrayList<>();
         //key("*") 获取所有键
         Set<String> keys = redisTemplate.keys("*");
         keys.forEach(
                 s -> {
-                    courseIdList.add(StringUtils.substringBefore(s, "finishedTable"));
+                    fbIdList.add(StringUtils.substringBefore(s, "finishedTable"));
                 }
         );
-        System.out.println("cacheSize: " + String.valueOf(keys.size()));
-        if (!courseIdList.contains(fbId)) {
+        boolean last = (System.currentTimeMillis() - feedbackRepository.findByFeedbackId(fbId).getEndTime().getTime()) <= 10 * 1000;
+        if (!fbIdList.contains(fbId)) {
             System.out.println("cancle: " + fbId);
             DynamicTask.map.get(fbId).cancel(true);
             DynamicTask.map.remove(fbId);
@@ -127,15 +131,29 @@ public class FeedbackServiceImpl implements FeedbackService {
             map.forEach((key1, isFin) -> {
 
                 if ((Integer) isFin == 0) {
+                    ZuccEchoMessage msg = new ZuccEchoMessage(ZuccEchoMessage.POST_TIP);
+                    msg.appendContent("msg", "send tips need to confirm.");
+                    msg.appendContent("fbId",fbId);
+                    msg.appendContent("studentId",key1);
                     // 发送消息
-                    System.out.println("postInfo: " + "feedbackId:" + fbId + "  studentId:" + key1);
+                    logger.info("postInfo: " + "feedbackId:" + fbId + "  studentId:" + key1);
+                    // 最后一次通知
+                    if (last) {
+                        logger.warn("last postInfo.");
+                        //需要确认送达的消息
+
+                        logger.warn("send msg to [{}]", rpcExchange.getName());
+                        String ret = (String) mqService.convertSendAndReceive(rpcExchange.getName(), Constants.KEY_RPC, msg);
+                        logger.warn("send msg got response[{}]", ret);
+                    }else {
+                        mqService.convertAndSend(Constants.QUE_WORK_QUEUE, msg);
+                    }
                 }
 
             });
         }
-        System.out.println("endPostTips");
-        System.out.println("************************");
-        return courseIdList;
+        logger.info("endPostTips");
+        return fbIdList;
     }
 
     /**
@@ -148,7 +166,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = new Feedback();
         BeanUtils.copyProperties(feedbackMap, feedback);
         if (feedback.getFeedbackTitle() == null || feedback.getFeedbackTitle().equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "模板名称为空");
+            throw new BusinessException(Constants.PARAM_ERROR, "模板名称为空");
         }
         ObjectId id = new ObjectId();
         feedback.setFeedbackId(id.toString());
@@ -165,10 +183,10 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public String deleteFeedback(String id) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
+            throw new BusinessException(Constants.PARAM_ERROR, "问卷ID不能为空");
         }
         if (feedbackRepository.findByFeedbackId(id) == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "找不到该问卷, 问卷ID: " + id);
+            throw new BusinessException(Constants.PARAM_ERROR, "找不到该问卷, 问卷ID: " + id);
         }
         feedbackRepository.deleteByFeedbackId(id);
         return id;
@@ -184,10 +202,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = new Feedback();
         BeanUtils.copyProperties(feedbackMap, feedback);
         if (feedback.getFeedbackId() == null || feedback.getFeedbackId().equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
+            throw new BusinessException(Constants.PARAM_ERROR, "问卷ID不能为空");
         }
         if (feedbackRepository.findByFeedbackId(feedback.getFeedbackId()) == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "找不到该问卷, 问卷ID: " + feedback.getFeedbackId());
+            throw new BusinessException(Constants.PARAM_ERROR, "找不到该问卷, 问卷ID: " + feedback.getFeedbackId());
         }
         feedbackRepository.save(feedbackMap);
         return feedback.getFeedbackId();
@@ -200,11 +218,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback findById(String feedBackId) {
         if (feedBackId.equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "问卷ID不能为空");
+            throw new BusinessException(Constants.PARAM_ERROR, "问卷ID不能为空");
         }
         Feedback feedback = feedbackRepository.findByFeedbackId(feedBackId);
         if (feedback == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未找到该问卷, 问卷ID: " + feedBackId);
+            throw new BusinessException(Constants.PARAM_ERROR, "未找到该问卷, 问卷ID: " + feedBackId);
         }
         return feedback;
     }
@@ -218,7 +236,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         courseService.findById(courseId);
         List<Feedback> feedbackList = feedbackRepository.find(courseId);
         if (feedbackList.size() == 0) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未找到该课程的问卷, 课程ID: " + courseId);
+            throw new BusinessException(Constants.PARAM_ERROR, "未找到该课程的问卷, 课程ID: " + courseId);
         }
         return feedbackList;
     }

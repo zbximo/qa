@@ -5,6 +5,8 @@ import com.example.zuccqa.impl.FeedbackServiceImpl;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.quartz.*;
@@ -33,6 +35,7 @@ import static org.quartz.JobBuilder.newJob;
 @RestController
 @Component
 public class DynamicTask {
+    private final Logger logger = LoggerFactory.getLogger(DynamicTask.class);
     // 创建ThreadPoolTaskScheduler线程池
     @Autowired
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
@@ -42,33 +45,36 @@ public class DynamicTask {
     public static ConcurrentHashMap<String, ScheduledFuture> map = new ConcurrentHashMap<String, ScheduledFuture>();
 
     public ScheduledFuture startCron(@RequestParam("id") String feedbackId) {
-        future = threadPoolTaskScheduler.schedule(new PostTips(feedbackId), new CronTrigger(System.currentTimeMillis() / 1000 % 60 + "/10 * * * * *"));
+        threadPoolTaskScheduler.setPoolSize(20);
+        future = threadPoolTaskScheduler.schedule(new PostTips(feedbackId),
+                new CronTrigger(System.currentTimeMillis() / 1000 % 60 + "/10 * * * * *"));
 
         assert future != null;
         DynamicTask.map.put(feedbackId, future);
-        System.out.println("DynamicTask.startCron() feedbackId: " + feedbackId + new Date(System.currentTimeMillis()));
+        logger.info("DynamicTask Start feedbackId:{} Time:{} ", feedbackId, new Date(System.currentTimeMillis()));
         return future;
     }
+
     @RequestMapping(value = "/tese", method = RequestMethod.GET)
     public ScheduledFuture start(@RequestParam("id") String feedbackId) throws SchedulerException {
         SchedulerFactory factory = new StdSchedulerFactory();
         Scheduler scheduler = factory.getScheduler();
 
         JobDetail jobDetail = newJob(DateTimeJob.class)
-                .withIdentity(feedbackId,"group2")
+                .withIdentity(feedbackId, "group2")
                 .withDescription(feedbackId)
                 .build();
 
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put("fbId",feedbackId);
+        jobDataMap.put("fbId", feedbackId);
 
         org.quartz.Trigger trigger = (org.quartz.Trigger) TriggerBuilder.newTrigger()
                 .withSchedule(CronScheduleBuilder.cronSchedule(System.currentTimeMillis() / 1000 % 60 + "/10 * * * * *"))
-                .withIdentity(feedbackId,"group2")
+                .withIdentity(feedbackId, "group2")
                 .build();
 
 
-        scheduler.scheduleJob(jobDetail,trigger);
+        scheduler.scheduleJob(jobDetail, trigger);
         scheduler.start();
         return null;
     }
@@ -82,8 +88,7 @@ public class DynamicTask {
 
         @Override
         public void run() {
-            System.out.println("************************");
-            System.out.println("startPostTips: " + new Date(System.currentTimeMillis()) + "  fbId" + this.fbId);
+            logger.info("startPostTips**** Time:{} fbId:{}", new Date(System.currentTimeMillis()), this.fbId);
             List<String> courseIdList = feedbackService.postTips(this.fbId);
 //
         }

@@ -26,7 +26,7 @@ public class Question {
      */
     private Integer isRequired;
     /**
-     * 选项(列表长度: {0:主观题,1:单选题,2:多选题})
+     * 选项
      */
     private List<String> options;
 

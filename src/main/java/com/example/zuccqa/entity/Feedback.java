@@ -32,6 +32,12 @@ public class Feedback {
     @Field("feedbackTitle")
     private String feedbackTitle;
     /**
+     * 问卷状态
+     */
+    @Field("feedbackStatus")
+    private Integer feedbackStatus;
+
+    /**
      * 创建时间
      */
     @Field("creatTime")

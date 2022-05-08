@@ -1,26 +1,29 @@
 package com.example.zuccqa.service;
 
-import com.example.zuccqa.entity.AnswerSheet;
+import com.example.zuccqa.entity.Feedback;
+import com.example.zuccqa.form.AnswerSheetDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface AnswerSheetService {
-    String addAnswerSheet(AnswerSheet answerSheetMap);
+    void addBlankAnswerSheets(Feedback feedback);
+
+    String addAnswerSheet(AnswerSheetDto answerSheetMap);
 
     String deleteAnswerSheet(String id);
 
-    String updateAnswerSheet(AnswerSheet answerSheetMap);
+    String updateAnswerSheet(AnswerSheetDto answerSheetMap);
 
-    AnswerSheet findById(String id);
+    AnswerSheetDto findById(String id);
 
-    List<AnswerSheet> findByUserId(String userId);
+    List<AnswerSheetDto> findByUserId(String userId);
 
-    List<AnswerSheet> findByFeedbackId(String feedbackId);
+    List<AnswerSheetDto> findByFeedbackId(String feedbackId);
 
-    AnswerSheet findByUserIdAndFeedbackId(String userId, String feedbackId);
+    AnswerSheetDto findByUserIdAndFeedbackId(String userId, String feedbackId);
 
-    List<AnswerSheet> getAll();
+    List<AnswerSheetDto> getAll();
 
 }

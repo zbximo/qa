@@ -36,8 +36,8 @@ public class AnswerSheet {
     /**
      * 回答列表
      */
-    @Field("answers")
-    private List<Question> answers;
+    @Field("answerList")
+    private List<List<String>> answerList;
     /**
      * 提交时间
      */

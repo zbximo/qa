@@ -1,6 +1,7 @@
 package com.example.zuccqa.repository;
 
 import com.example.zuccqa.entity.AnswerSheet;
+import com.example.zuccqa.entity.Feedback;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

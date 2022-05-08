@@ -1,13 +1,19 @@
 package com.example.zuccqa.controller;
 
 import com.example.zuccqa.entity.AnswerSheet;
+import com.example.zuccqa.form.AnswerSheetDto;
+import com.example.zuccqa.mq.ZuccEchoMessage;
 import com.example.zuccqa.result.ExceptionMsg;
 import com.example.zuccqa.result.Response;
 import com.example.zuccqa.result.ResponseData;
 import com.example.zuccqa.service.AnswerSheetService;
+import com.example.zuccqa.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,19 +29,22 @@ public class AnswerSheetController {
     private final Logger logger = LoggerFactory.getLogger(AnswerSheetController.class);
     @Autowired
     private AnswerSheetService answerSheetService;
+    @Autowired
+    private AmqpTemplate mqService;
 
-
+    @Qualifier("direct")
+    @Autowired
+    private DirectExchange directExchange;
     /**
      * @param answerSheetMap 问卷填写表
      * @return
-     * @desc 添加一个问卷填写表
+     * @desc 添加一个问卷填写表，用submit
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseData submitAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
+    public ResponseData addAnswerSheet(@RequestBody AnswerSheetDto answerSheetMap) {
 
         String answerSheetId = answerSheetService.addAnswerSheet(answerSheetMap);
-        logger.warn("create answerSheet answerSheetId: {}", answerSheetId);
-
+//        logger.warn("create answerSheet answerSheetId: {}", answerSheetId);
         return new ResponseData(ExceptionMsg.CREATE_SUCCESS, answerSheetId);
 
     }
@@ -54,13 +63,16 @@ public class AnswerSheetController {
     }
 
     /**
+     * 同时有很多用户提交答卷，用Work-Sequence 消息队列处理
      * @param answerSheetMap 问卷填写表信息
      * @return
      */
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseData updateAnswerSheet(@RequestBody AnswerSheet answerSheetMap) {
-        String answerSheetId = answerSheetService.updateAnswerSheet(answerSheetMap);
-        logger.warn("update answerSheets answerSheetId: {}", answerSheetId);
+    public ResponseData submitAnswerSheet(@RequestBody AnswerSheetDto answerSheetMap) {
+        ZuccEchoMessage msg = new ZuccEchoMessage(ZuccEchoMessage.CATEGORY_SHEET_CREATE);
+        msg.appendContent("answerSheet",answerSheetMap);
+        mqService.convertAndSend(Constants.QUE_WORK_QUEUE, msg);
+        answerSheetService.updateAnswerSheet(answerSheetMap);
 
         return new ResponseData(ExceptionMsg.UPDATE_SUCCESS, answerSheetMap);
     }
@@ -74,7 +86,7 @@ public class AnswerSheetController {
     @RequestMapping(value = "/viewAnswerSheetById", method = RequestMethod.GET)
     public ResponseData viewAnswerSheetById(@RequestParam("id") String id) {
 
-        AnswerSheet answerSheet = answerSheetService.findById(id);
+        AnswerSheetDto answerSheet = answerSheetService.findById(id);
         logger.warn("query answerSheets answerSheetId: {}", id);
 
         return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheet);
@@ -90,7 +102,7 @@ public class AnswerSheetController {
     @RequestMapping(value = "/viewAnswerSheetByUserId", method = RequestMethod.GET)
     public ResponseData findByUserId(@RequestParam("userId") String userId) {
 
-        List<AnswerSheet> answerSheetList = answerSheetService.findByUserId(userId);
+        List<AnswerSheetDto> answerSheetList = answerSheetService.findByUserId(userId);
         logger.warn("query answerSheets userId: {}", userId);
 
         return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
@@ -105,7 +117,7 @@ public class AnswerSheetController {
     @RequestMapping(value = "/viewAnswerSheetsByFeedbackId", method = RequestMethod.GET)
     public ResponseData findByFeedbackId(@RequestParam("feedbackId") String feedbackId) {
 
-        List<AnswerSheet> answerSheetList = answerSheetService.findByFeedbackId(feedbackId);
+        List<AnswerSheetDto> answerSheetList = answerSheetService.findByFeedbackId(feedbackId);
         logger.warn("query answerSheets feedbackId: {}", feedbackId);
         return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
     }
@@ -121,7 +133,7 @@ public class AnswerSheetController {
     public ResponseData getOneAnswerSheet(@RequestParam("userId") String userId,
                                           @RequestParam("feedbackId") String feedbackId) {
 
-        AnswerSheet answerSheet = answerSheetService.findByUserIdAndFeedbackId(userId, feedbackId);
+        AnswerSheetDto answerSheet = answerSheetService.findByUserIdAndFeedbackId(userId, feedbackId);
         logger.warn("query answerSheet userId: {},feedbackId: {}", userId, feedbackId);
         return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheet);
     }
@@ -133,7 +145,7 @@ public class AnswerSheetController {
      */
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseData getAll() {
-        List<AnswerSheet> answerSheetList = answerSheetService.getAll();
+        List<AnswerSheetDto> answerSheetList = answerSheetService.getAll();
         logger.warn("query answerSheets");
         return new ResponseData(ExceptionMsg.QUERY_SUCCESS, answerSheetList);
     }

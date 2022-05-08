@@ -5,7 +5,7 @@ import com.example.zuccqa.exception.BusinessException;
 import com.example.zuccqa.repository.ModelRepository;
 
 import com.example.zuccqa.service.ModelService;
-import com.example.zuccqa.utils.Constant;
+import com.example.zuccqa.utils.Constants;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ModelServiceImpl implements ModelService {
         Model model = new Model();
         BeanUtils.copyProperties(modelMap, model);
         if (model.getModelName() == null || model.getModelName().equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "缺少模板名称");
+            throw new BusinessException(Constants.PARAM_ERROR, "缺少模板名称");
         }
         checkQuestion(model);
         ObjectId id = new ObjectId();
@@ -52,14 +52,14 @@ public class ModelServiceImpl implements ModelService {
         if (model.getQuestionList() != null) {
             model.getQuestionList().stream().forEach(
                     question -> {
-                        if (!Constant.Q_CATEGORY_SINGLE_CHOICE.equals(question.getQuestionType())
-                                && !Constant.Q_CATEGORY_MULTI_CHOICE.equals(question.getQuestionType())
-                                && !Constant.Q_CATEGORY_SUBJECTIVE.equals(question.getQuestionType())
+                        if (!Constants.Q_CATEGORY_SINGLE_CHOICE.equals(question.getQuestionType())
+                                && !Constants.Q_CATEGORY_MULTI_CHOICE.equals(question.getQuestionType())
+                                && !Constants.Q_CATEGORY_SUBJECTIVE.equals(question.getQuestionType())
                         ) {
                             throw new BusinessException(300000,question.getQuestionTitle() + "的类型不支持");
                         }
-                        if (Constant.Q_CATEGORY_SINGLE_CHOICE.equals(question.getQuestionType())
-                                || Constant.Q_CATEGORY_MULTI_CHOICE.equals(question.getQuestionType())) {
+                        if (Constants.Q_CATEGORY_SINGLE_CHOICE.equals(question.getQuestionType())
+                                || Constants.Q_CATEGORY_MULTI_CHOICE.equals(question.getQuestionType())) {
                             if (question.getOptions() == null || question.getOptions().size() == 0) {
                                 throw new BusinessException(300000,question.getQuestionTitle() + "的选项不能为空");
                             }
@@ -75,11 +75,11 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public String deleteModel(String id) {
         if (id.equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "模板ID不能为空");
+            throw new BusinessException(Constants.PARAM_ERROR, "模板ID不能为空");
         }
         Model model = modelRepository.findByModelID(id);
         if (model == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未有找到该模板: 模板ID: " + id);
+            throw new BusinessException(Constants.PARAM_ERROR, "未有找到该模板: 模板ID: " + id);
         }
         modelRepository.deleteByModelID(id);
         return id;
@@ -95,11 +95,11 @@ public class ModelServiceImpl implements ModelService {
         Model model = new Model();
         BeanUtils.copyProperties(modelMap, model);
         if (model.getModelID() == null || model.getModelID().equals("")) {
-            throw new BusinessException(Constant.PARAM_ERROR, "缺少模板ID");
+            throw new BusinessException(Constants.PARAM_ERROR, "缺少模板ID");
         }
         Model queryModel = modelRepository.findByModelID(modelMap.getModelID());
         if (queryModel == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未有找到该模板: 模板ID: " + modelMap.getModelID());
+            throw new BusinessException(Constants.PARAM_ERROR, "未有找到该模板: 模板ID: " + modelMap.getModelID());
         }
         checkQuestion(model);
         modelRepository.save(model);
@@ -114,7 +114,7 @@ public class ModelServiceImpl implements ModelService {
     public Model findById(String id) {
         Model model = modelRepository.findByModelID(id);
         if (model == null) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未找到该模板: 模板ID: " + id);
+            throw new BusinessException(Constants.PARAM_ERROR, "未找到该模板: 模板ID: " + id);
         }
         return model;
     }
@@ -127,7 +127,7 @@ public class ModelServiceImpl implements ModelService {
     public List<Model> findByName(String name) {
         List<Model> modelList = modelRepository.findByModelName(name);
         if (modelList.size() == 0) {
-            throw new BusinessException(Constant.PARAM_ERROR, "未找到该模板: 模板名: " + name);
+            throw new BusinessException(Constants.PARAM_ERROR, "未找到该模板: 模板名: " + name);
         }
         return modelList;
     }
