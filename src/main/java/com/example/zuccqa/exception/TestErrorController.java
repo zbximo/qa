@@ -46,4 +46,8 @@ public class TestErrorController implements ErrorController {
     }
 
 
+    @Override
+    public String getErrorPath() {
+        return null;
+    }
 }
