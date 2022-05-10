@@ -54,7 +54,14 @@ public class ZuccEchoConfig {
     public Queue queue() {
         return new Queue(Constants.QUE_SIMPLE);
     }
-
+    @Bean
+    public Queue Routinequeue() {
+        return new Queue(Constants.QUE_ROUTINE_QUEUE);
+    }
+    @Bean
+    public Queue Topicqueue() {
+        return new Queue(Constants.QUE_TOPIC_QUEUE);
+    }
     @Bean
     public Queue queueWorkQueue() {
         return new Queue(Constants.QUE_WORK_QUEUE);
@@ -161,7 +168,10 @@ public class ZuccEchoConfig {
     public Queue rpcQue() {
         return new Queue(Constants.QUE_RPC_QUEUE);
     }
-
+    @Bean
+    public Queue subQue(){
+        return new Queue(Constants.QUE_SUB_QUEUE);
+    }
     @Bean
     public Binding bindingRpc(@Qualifier("rpc") DirectExchange rpc,
                            Queue rpcQue) {
