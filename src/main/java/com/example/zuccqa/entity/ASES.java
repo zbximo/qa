@@ -40,6 +40,6 @@ public class ASES implements Serializable {
     /**
      * 提交时间
      */
-    @Field(type = FieldType.Date_Range)
+    @Field(index = false,type = FieldType.Date_Range)
     private Date submitDate;
 }

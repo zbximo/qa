@@ -34,18 +34,19 @@ public class FbESController {
     }
 
     @PostMapping("search")
-    public String searchByPageAndSort(Integer start, String key) {
+    public Page<FbES> searchByPageAndSort(Integer start, String key) {
         // 分页：
         if (start == null) {
             start = 0;
         }
         int size = 2;//每页文档数
-
+        System.out.println(start);
+        System.out.println(key);
         NativeSearchQueryBuilder nativeSearchQueryBuilderQueryBuilder = new NativeSearchQueryBuilder();
         // nativeSearchQueryBuilderQueryBuilder.withQuery(QueryBuilders.matchQuery("name", key));
-        nativeSearchQueryBuilderQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(key, "feedbackTitle","questionList.questionTitle"));
+        nativeSearchQueryBuilderQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(key, "feedbackTitle", "questionList.questionTitle"));
         //nativeSearchQueryBuilderQueryBuilder.withHighlightFields(new HighlightBuilder.Field("name").preTags("<span style='background-color: #FFFF00'>").postTags("</span>"));
-         nativeSearchQueryBuilderQueryBuilder.withSort(SortBuilders.fieldSort("id").order(SortOrder.DESC));
+        nativeSearchQueryBuilderQueryBuilder.withSort(SortBuilders.fieldSort("id").order(SortOrder.DESC));
 //        nativeSearchQueryBuilderQueryBuilder.withPageable(PageRequest.of(start, size));
         Page<FbES> fbESPage = fbESRepository.search(nativeSearchQueryBuilderQueryBuilder.build());
         // 总条数
@@ -55,7 +56,7 @@ public class FbESController {
         System.out.println(fbESPage.getTotalElements());
         System.out.println(fbESPage.getTotalPages());
         System.out.println(fbESPage.getNumberOfElements());
-        return "ok";
+        return fbESPage;
     }
 
 }

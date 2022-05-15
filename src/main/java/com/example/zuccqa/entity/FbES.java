@@ -37,7 +37,11 @@ public class FbES implements Serializable {
      */
     @Field(type = FieldType.Integer)
     private Integer feedbackStatus;
-
+    /**
+     * 问题列表
+     */
+//    @Field(type = FieldType.Nested)
+    private List<QuestionES> questionList;
     /**
      * 创建时间
      */
@@ -53,9 +57,5 @@ public class FbES implements Serializable {
      */
     @Field(index = false, type = FieldType.Date)
     private Date endTime;
-    /**
-     * 问题列表
-     */
-//    @Field(type = FieldType.Nested)
-    private List<QuestionES> questionList;
+
 }
