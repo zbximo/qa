@@ -20,14 +20,13 @@ public interface CourseRepository extends MongoRepository<Course, Integer> {
 
     void deleteByCourseId(String courseId);
 
-    @Query(fields = "{'courseId':1}")
     List<Course> findByStudentIdListContains(String studentId);
-    @Query(value = "db.getCollection(\"Course\").aggregate([{$lookup:{\n" +
-            "    from: \"Feedback\",\n" +
-            "    localField: \"_id\",\n" +
-            "    foreignField: \"feedbackCourseId\",\n" +
-            "    as: \"a\"\n" +
-            "}}, {$match:{ '_id':\"625e6c7292db474b15b2a34f\"}}])")
-    Object test();
+//    @Query(value = "db.getCollection(\"Course\").aggregate([{$lookup:{\n" +
+//            "    from: \"Feedback\",\n" +
+//            "    localField: \"_id\",\n" +
+//            "    foreignField: \"feedbackCourseId\",\n" +
+//            "    as: \"a\"\n" +
+//            "}}, {$match:{ '_id':\"625e6c7292db474b15b2a34f\"}}])")
+//    Object test();
 
 }

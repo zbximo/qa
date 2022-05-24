@@ -57,5 +57,6 @@ public class FbES implements Serializable {
      */
     @Field(index = false, type = FieldType.Date)
     private Date endTime;
-
+    @Field(type = FieldType.Text,analyzer = "ik_max_word")
+    private List<String> t;
 }

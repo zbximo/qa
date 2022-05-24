@@ -42,4 +42,6 @@ public class ASES implements Serializable {
      */
     @Field(index = false,type = FieldType.Date_Range)
     private Date submitDate;
+
+
 }

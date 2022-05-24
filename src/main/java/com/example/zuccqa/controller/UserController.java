@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-class UserController {
+public class UserController {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
